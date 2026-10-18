@@ -1,18 +1,40 @@
 // ==========================================
 // PRESSUREGUARD SIMULATOR
+// LATEST VERSION
 // SIMULATED DEMONSTRATION DATA
 // ==========================================
 
+
+// ==========================================
+// SETTINGS
+// ==========================================
+
 const BASE_PRESSURE = 12;
-const WARNING_THRESHOLD = 35;
+
 const ELEVATED_THRESHOLD = 28;
 
+const WARNING_THRESHOLD = 35;
+
+const MAX_PRESSURE = 38.2;
+
+const RELIEVED_PRESSURE = 8.4;
+
 const PRESSURE_RISE_TIME = 5000;
+
 const WARNING_PAUSE_TIME = 1200;
+
 const DEFLATION_TIME = 4000;
+
 const INFLATION_TIME = 4000;
 
+
+// ==========================================
+// SYSTEM VARIABLES
+// ==========================================
+
 let activeCell = null;
+
+let sequenceNumber = 0;
 
 let pressureValues = [
     12.1,
@@ -21,7 +43,14 @@ let pressureValues = [
     12.0
 ];
 
-let sequenceNumber = 0;
+
+// ==========================================
+// GRAPH VARIABLES
+// ==========================================
+
+let graphValues = [];
+
+const MAX_GRAPH_POINTS = 60;
 
 
 // ==========================================
@@ -30,11 +59,11 @@ let sequenceNumber = 0;
 
 document
     .querySelectorAll("[data-cell]")
-    .forEach(function(button) {
+    .forEach(function (button) {
 
         button.addEventListener(
             "click",
-            function() {
+            function () {
 
                 triggerPressure(
                     Number(button.dataset.cell)
@@ -52,9 +81,12 @@ document
 
 document.addEventListener(
     "keydown",
-    function(event) {
+    function (event) {
 
-        if (["1", "2", "3", "4"].includes(event.key)) {
+        if (
+            ["1", "2", "3", "4"]
+                .includes(event.key)
+        ) {
 
             triggerPressure(
                 Number(event.key)
@@ -72,7 +104,7 @@ document.addEventListener(
 
 async function triggerPressure(cellNumber) {
 
-    // Ignore repeated selection of same active cell
+    // Do not trigger the same active cell again.
 
     if (activeCell === cellNumber) {
         return;
@@ -81,19 +113,23 @@ async function triggerPressure(cellNumber) {
 
     sequenceNumber++;
 
-    const mySequence =
-        sequenceNumber;
+    const mySequence = sequenceNumber;
 
-    const previousCell =
-        activeCell;
+    const previousCell = activeCell;
 
-    activeCell =
-        cellNumber;
+    activeCell = cellNumber;
 
 
-    // --------------------------------------
-    // PREVIOUS CELL REINFLATES
-    // --------------------------------------
+    // Clear previous graph when a new sensor is selected.
+
+    graphValues = [];
+
+    clearGraph();
+
+
+    // ======================================
+    // REINFLATE PREVIOUS CELL
+    // ======================================
 
     if (previousCell !== null) {
 
@@ -104,9 +140,9 @@ async function triggerPressure(cellNumber) {
     }
 
 
-    // --------------------------------------
-    // NEW ACTIVE CELL
-    // --------------------------------------
+    // ======================================
+    // PREPARE NEW CELL
+    // ======================================
 
     const cell =
         document.getElementById(
@@ -123,10 +159,16 @@ async function triggerPressure(cellNumber) {
             "readingCard" + cellNumber
         );
 
+    const bar =
+        document.getElementById(
+            "bar" + cellNumber
+        );
+
 
     cell.classList.remove(
         "deflated"
     );
+
 
     state.classList.remove(
         "warning"
@@ -136,29 +178,66 @@ async function triggerPressure(cellNumber) {
         "elevated"
     );
 
+
+    bar.classList.remove(
+        "high"
+    );
+
+
     state.textContent =
         "PRESSURE RISING";
+
 
     card.classList.add(
         "active"
     );
 
 
-    document
-        .getElementById(
+    // ======================================
+    // MAIN MONITOR
+    // ======================================
+
+    const mainSensorLabel =
+        document.getElementById(
             "mainSensorLabel"
-        )
-        .textContent =
-        "SENSOR " + cellNumber;
+        );
 
 
-    document
-        .getElementById(
+    if (mainSensorLabel) {
+
+        mainSensorLabel.textContent =
+            "SENSOR " + cellNumber;
+
+    }
+
+
+    const graphSensor =
+        document.getElementById(
+            "graphSensor"
+        );
+
+
+    if (graphSensor) {
+
+        graphSensor.textContent =
+            "SENSOR " + cellNumber;
+
+    }
+
+
+    const warningBox =
+        document.getElementById(
             "warningBox"
-        )
-        .classList.remove(
+        );
+
+
+    if (warningBox) {
+
+        warningBox.classList.remove(
             "active"
         );
+
+    }
 
 
     setMonitor(
@@ -168,22 +247,33 @@ async function triggerPressure(cellNumber) {
 
 
     setMessage(
+
         "Monitoring Sensor " + cellNumber,
+
         "Simulated contact pressure is increasing."
+
     );
 
 
     // ======================================
-    // IRREGULAR PRESSURE RISE
+    // PRESSURE RISE
     // ======================================
 
     const completed =
         await animateIrregularRise(
+
             cellNumber,
-            pressureValues[cellNumber - 1],
-            38.2,
+
+            pressureValues[
+                cellNumber - 1
+            ],
+
+            MAX_PRESSURE,
+
             PRESSURE_RISE_TIME,
+
             mySequence
+
         );
 
 
@@ -191,7 +281,9 @@ async function triggerPressure(cellNumber) {
         !completed ||
         mySequence !== sequenceNumber
     ) {
+
         return;
+
     }
 
 
@@ -208,31 +300,29 @@ async function triggerPressure(cellNumber) {
     state.textContent =
         "HIGH PRESSURE";
 
+
     state.classList.remove(
         "elevated"
     );
+
 
     state.classList.add(
         "warning"
     );
 
 
-    document
-        .getElementById(
-            "bar" + cellNumber
-        )
-        .classList.add(
-            "high"
-        );
+    bar.classList.add(
+        "high"
+    );
 
 
-    document
-        .getElementById(
-            "warningBox"
-        )
-        .classList.add(
+    if (warningBox) {
+
+        warningBox.classList.add(
             "active"
         );
+
+    }
 
 
     setMessage(
@@ -247,6 +337,10 @@ async function triggerPressure(cellNumber) {
     );
 
 
+    // ======================================
+    // SHORT CONTROLLER RESPONSE DELAY
+    // ======================================
+
     await wait(
         WARNING_PAUSE_TIME
     );
@@ -255,16 +349,24 @@ async function triggerPressure(cellNumber) {
     if (
         mySequence !== sequenceNumber
     ) {
+
         return;
+
     }
 
 
     // ======================================
-    // DEFLATION
+    // OPEN EXHAUST VALVE
     // ======================================
 
     state.textContent =
         "VALVE OPEN • DEFLATING";
+
+
+    setMonitor(
+        "danger",
+        "REDISTRIBUTING"
+    );
 
 
     setMessage(
@@ -278,18 +380,32 @@ async function triggerPressure(cellNumber) {
     );
 
 
+    // Physical cell begins flattening.
+
     cell.classList.add(
         "deflated"
     );
 
 
+    // ======================================
+    // PRESSURE FALL
+    // ======================================
+
     const deflated =
         await animatePressure(
+
             cellNumber,
-            pressureValues[cellNumber - 1],
-            8.4,
+
+            pressureValues[
+                cellNumber - 1
+            ],
+
+            RELIEVED_PRESSURE,
+
             DEFLATION_TIME,
+
             mySequence
+
         );
 
 
@@ -297,13 +413,26 @@ async function triggerPressure(cellNumber) {
         !deflated ||
         mySequence !== sequenceNumber
     ) {
+
         return;
+
     }
 
 
     // ======================================
     // PRESSURE RELIEVED
     // ======================================
+
+    pressureValues[
+        cellNumber - 1
+    ] = RELIEVED_PRESSURE;
+
+
+    updatePressure(
+        cellNumber,
+        RELIEVED_PRESSURE
+    );
+
 
     state.textContent =
         "DEFLATED • VALVE CLOSED";
@@ -314,18 +443,19 @@ async function triggerPressure(cellNumber) {
     );
 
 
+    state.classList.remove(
+        "elevated"
+    );
+
+
     card.classList.remove(
         "active"
     );
 
 
-    document
-        .getElementById(
-            "bar" + cellNumber
-        )
-        .classList.remove(
-            "high"
-        );
+    bar.classList.remove(
+        "high"
+    );
 
 
     setMonitor(
@@ -360,7 +490,7 @@ function animateIrregularRise(
 ) {
 
     return new Promise(
-        function(resolve) {
+        function (resolve) {
 
             const startTime =
                 performance.now();
@@ -374,40 +504,51 @@ function animateIrregularRise(
                 ) {
 
                     resolve(false);
+
                     return;
+
                 }
 
 
                 const progress =
                     Math.min(
-                        (currentTime - startTime)
-                        / duration,
+
+                        (
+                            currentTime -
+                            startTime
+                        )
+                        /
+                        duration,
+
                         1
+
                     );
 
 
-                /*
-                   General upward trend
-                */
+                // General upward trend.
 
                 const trend =
+
                     startValue +
-                    (endValue - startValue)
+
+                    (
+                        endValue -
+                        startValue
+                    )
+
                     * progress;
 
 
-                /*
-                   Small simulated variation.
-
-                   It decreases near the end so
-                   the final value remains stable.
-                */
+                // Small simulated variation.
 
                 const variation =
+
                     Math.sin(
                         currentTime / 170
                     )
+
                     * 0.45
+
                     * (1 - progress);
 
 
@@ -438,7 +579,9 @@ function animateIrregularRise(
                         animate
                     );
 
-                } else {
+                }
+
+                else {
 
                     pressureValues[
                         cellNumber - 1
@@ -469,7 +612,7 @@ function animateIrregularRise(
 
 
 // ==========================================
-// GENERAL PRESSURE ANIMATION
+// PRESSURE FALL ANIMATION
 // ==========================================
 
 function animatePressure(
@@ -481,7 +624,7 @@ function animatePressure(
 ) {
 
     return new Promise(
-        function(resolve) {
+        function (resolve) {
 
             const startTime =
                 performance.now();
@@ -495,28 +638,64 @@ function animatePressure(
                 ) {
 
                     resolve(false);
+
                     return;
+
                 }
 
 
                 const progress =
                     Math.min(
-                        (currentTime - startTime)
-                        / duration,
+
+                        (
+                            currentTime -
+                            startTime
+                        )
+                        /
+                        duration,
+
                         1
+
                     );
 
 
+                // Smooth acceleration/deceleration.
+
                 const smoothProgress =
+
                     progress *
                     progress *
-                    (3 - 2 * progress);
+                    (
+                        3 -
+                        2 * progress
+                    );
+
+
+                // Small variation during deflation.
+
+                const variation =
+
+                    Math.sin(
+                        currentTime / 150
+                    )
+
+                    * 0.18
+
+                    * (1 - progress);
 
 
                 const value =
+
                     startValue +
-                    (endValue - startValue)
-                    * smoothProgress;
+
+                    (
+                        endValue -
+                        startValue
+                    )
+
+                    * smoothProgress
+
+                    + variation;
 
 
                 pressureValues[
@@ -536,7 +715,20 @@ function animatePressure(
                         animate
                     );
 
-                } else {
+                }
+
+                else {
+
+                    pressureValues[
+                        cellNumber - 1
+                    ] = endValue;
+
+
+                    updatePressure(
+                        cellNumber,
+                        endValue
+                    );
+
 
                     resolve(true);
 
@@ -570,7 +762,46 @@ function updatePressureState(
         );
 
 
+    if (!state) {
+        return;
+    }
+
+
+    // ======================================
+    // NORMAL RISING
+    // ======================================
+
     if (
+        value < ELEVATED_THRESHOLD
+    ) {
+
+        state.textContent =
+            "PRESSURE RISING";
+
+
+        state.classList.remove(
+            "elevated"
+        );
+
+
+        state.classList.remove(
+            "warning"
+        );
+
+
+        setMonitor(
+            "rising",
+            "MONITORING"
+        );
+
+    }
+
+
+    // ======================================
+    // ELEVATED
+    // ======================================
+
+    else if (
         value >= ELEVATED_THRESHOLD &&
         value < WARNING_THRESHOLD
     ) {
@@ -578,8 +809,14 @@ function updatePressureState(
         state.textContent =
             "ELEVATED";
 
+
         state.classList.add(
             "elevated"
+        );
+
+
+        state.classList.remove(
+            "warning"
         );
 
 
@@ -591,16 +828,20 @@ function updatePressureState(
     }
 
 
-    if (
-        value >= WARNING_THRESHOLD
-    ) {
+    // ======================================
+    // DEMO THRESHOLD EXCEEDED
+    // ======================================
+
+    else {
 
         state.textContent =
             "HIGH PRESSURE";
 
+
         state.classList.remove(
             "elevated"
         );
+
 
         state.classList.add(
             "warning"
@@ -621,14 +862,13 @@ function updatePressureState(
 // REINFLATE PREVIOUS CELL
 // ==========================================
 
-function reinflateCell(
-    cellNumber
-) {
+function reinflateCell(cellNumber) {
 
     const cell =
         document.getElementById(
             "cell" + cellNumber
         );
+
 
     const state =
         document.getElementById(
@@ -636,9 +876,32 @@ function reinflateCell(
         );
 
 
+    const card =
+        document.getElementById(
+            "readingCard" + cellNumber
+        );
+
+
+    const bar =
+        document.getElementById(
+            "bar" + cellNumber
+        );
+
+
+    if (
+        !cell ||
+        !state
+    ) {
+
+        return;
+
+    }
+
+
     state.classList.remove(
         "warning"
     );
+
 
     state.classList.remove(
         "elevated"
@@ -649,27 +912,29 @@ function reinflateCell(
         "VALVE CLOSED • INFLATING";
 
 
+    // Visually reinflate the air cell.
+
     cell.classList.remove(
         "deflated"
     );
 
 
-    document
-        .getElementById(
-            "readingCard" + cellNumber
-        )
-        .classList.remove(
+    if (card) {
+
+        card.classList.remove(
             "active"
         );
 
+    }
 
-    document
-        .getElementById(
-            "bar" + cellNumber
-        )
-        .classList.remove(
+
+    if (bar) {
+
+        bar.classList.remove(
             "high"
         );
+
+    }
 
 
     const startingValue =
@@ -688,16 +953,39 @@ function reinflateCell(
 
         const progress =
             Math.min(
-                (currentTime - startTime)
-                / INFLATION_TIME,
+
+                (
+                    currentTime -
+                    startTime
+                )
+                /
+                INFLATION_TIME,
+
                 1
+
+            );
+
+
+        const smoothProgress =
+
+            progress *
+            progress *
+            (
+                3 -
+                2 * progress
             );
 
 
         const value =
+
             startingValue +
-            (BASE_PRESSURE - startingValue)
-            * progress;
+
+            (
+                BASE_PRESSURE -
+                startingValue
+            )
+
+            * smoothProgress;
 
 
         pressureValues[
@@ -717,7 +1005,20 @@ function reinflateCell(
                 animateInflation
             );
 
-        } else {
+        }
+
+        else {
+
+            pressureValues[
+                cellNumber - 1
+            ] = BASE_PRESSURE;
+
+
+            updatePressure(
+                cellNumber,
+                BASE_PRESSURE
+            );
+
 
             state.textContent =
                 "INFLATED";
@@ -747,39 +1048,87 @@ function updatePressure(
         value.toFixed(1);
 
 
-    document
-        .getElementById(
+    const pressureDisplay =
+        document.getElementById(
             "pressure" + cellNumber
-        )
-        .textContent =
-        displayValue + " mmHg";
+        );
 
+
+    if (pressureDisplay) {
+
+        pressureDisplay.textContent =
+            displayValue + " mmHg";
+
+    }
+
+
+    // ======================================
+    // PRESSURE BAR
+    // ======================================
 
     const percentage =
         Math.min(
-            (value / 50) * 100,
+            Math.max(
+                (value / 50) * 100,
+                0
+            ),
             100
         );
 
 
-    document
-        .getElementById(
+    const bar =
+        document.getElementById(
             "bar" + cellNumber
-        )
-        .style.width =
-        percentage + "%";
+        );
 
+
+    if (bar) {
+
+        bar.style.width =
+            percentage + "%";
+
+    }
+
+
+    // ======================================
+    // MAIN ACTIVE SENSOR DISPLAY
+    // ======================================
 
     if (
         cellNumber === activeCell
     ) {
 
-        document
-            .getElementById(
+        const mainPressure =
+            document.getElementById(
                 "mainPressure"
-            )
-            .textContent =
-            displayValue + " mmHg";
+            );
+
+
+        if (mainPressure) {
+
+            mainPressure.textContent =
+                displayValue + " mmHg";
+
+        }
+
+
+        const graphSensor =
+            document.getElementById(
+                "graphSensor"
+            );
+
+
+        if (graphSensor) {
+
+            graphSensor.textContent =
+                "SENSOR " + cellNumber;
+
+        }
+
+
+        // Add data to graph at a controlled rate.
+
+        updateGraphData(value);
 
     }
 
@@ -787,7 +1136,7 @@ function updatePressure(
 
 
 // ==========================================
-// NORMAL SENSOR FLUCTUATION
+// NORMAL IDLE SENSOR FLUCTUATION
 // ==========================================
 
 function updateIdleSensors() {
@@ -798,15 +1147,14 @@ function updateIdleSensors() {
         cellNumber++
     ) {
 
-        /*
-           Do not interfere with the
-           currently active sensor.
-        */
+        // Don't interfere with active cell.
 
         if (
             cellNumber === activeCell
         ) {
+
             continue;
+
         }
 
 
@@ -816,42 +1164,44 @@ function updateIdleSensors() {
             );
 
 
-        /*
-           Do not interfere while a previous
-           cell is visibly reinflating.
-        */
+        // Don't interfere during reinflation.
 
         if (
+            state &&
             state.textContent.includes(
                 "INFLATING"
             )
         ) {
+
             continue;
+
         }
 
 
         const target =
+
             BASE_PRESSURE +
+
             (
                 Math.random() * 1.2
                 - 0.6
             );
 
 
-        /*
-           Move gradually rather than
-           instantly jumping.
-        */
-
         pressureValues[
             cellNumber - 1
         ] +=
+
             (
                 target -
+
                 pressureValues[
                     cellNumber - 1
                 ]
-            ) * 0.35;
+
+            )
+
+            * 0.35;
 
 
         updatePressure(
@@ -866,12 +1216,194 @@ function updateIdleSensors() {
 }
 
 
-// Update idle sensors roughly twice per second.
+// Update idle sensors every 500 ms.
 
 setInterval(
     updateIdleSensors,
     500
 );
+
+
+// ==========================================
+// LIVE GRAPH
+// ==========================================
+
+let lastGraphUpdate = 0;
+
+
+function updateGraphData(value) {
+
+    const now =
+        performance.now();
+
+
+    // Prevent hundreds of points per second.
+
+    if (
+        now -
+        lastGraphUpdate <
+        100
+    ) {
+
+        return;
+
+    }
+
+
+    lastGraphUpdate = now;
+
+
+    addGraphPoint(
+        value
+    );
+
+}
+
+
+// ==========================================
+// ADD GRAPH POINT
+// ==========================================
+
+function addGraphPoint(value) {
+
+    const graph =
+        document.getElementById(
+            "graphLine"
+        );
+
+
+    // If graph HTML hasn't been added,
+    // simulator still works normally.
+
+    if (!graph) {
+        return;
+    }
+
+
+    graphValues.push(
+        value
+    );
+
+
+    if (
+        graphValues.length >
+        MAX_GRAPH_POINTS
+    ) {
+
+        graphValues.shift();
+
+    }
+
+
+    drawGraph();
+
+}
+
+
+// ==========================================
+// DRAW GRAPH
+// ==========================================
+
+function drawGraph() {
+
+    const graph =
+        document.getElementById(
+            "graphLine"
+        );
+
+
+    if (
+        !graph ||
+        graphValues.length < 2
+    ) {
+
+        return;
+
+    }
+
+
+    const width = 300;
+
+    const height = 80;
+
+    const maxPressure = 50;
+
+
+    const points =
+        graphValues.map(
+
+            function (
+                value,
+                index
+            ) {
+
+                const x =
+
+                    (
+                        index /
+                        (MAX_GRAPH_POINTS - 1)
+                    )
+
+                    * width;
+
+
+                const y =
+
+                    height -
+
+                    (
+                        value /
+                        maxPressure
+                    )
+
+                    * height;
+
+
+                return (
+
+                    x.toFixed(1)
+
+                    + ","
+
+                    + y.toFixed(1)
+
+                );
+
+            }
+
+        );
+
+
+    graph.setAttribute(
+        "points",
+        points.join(" ")
+    );
+
+}
+
+
+// ==========================================
+// CLEAR GRAPH
+// ==========================================
+
+function clearGraph() {
+
+    const graph =
+        document.getElementById(
+            "graphLine"
+        );
+
+
+    if (graph) {
+
+        graph.setAttribute(
+            "points",
+            ""
+        );
+
+    }
+
+}
 
 
 // ==========================================
@@ -887,6 +1419,11 @@ function setMonitor(
         document.getElementById(
             "monitorStatus"
         );
+
+
+    if (!monitor) {
+        return;
+    }
 
 
     monitor.className =
@@ -909,32 +1446,44 @@ function setMessage(
     message
 ) {
 
-    document
-        .getElementById(
+    const titleElement =
+        document.getElementById(
             "warningTitle"
-        )
-        .textContent =
-        title;
+        );
 
 
-    document
-        .getElementById(
+    const messageElement =
+        document.getElementById(
             "warningMessage"
-        )
-        .textContent =
-        message;
+        );
+
+
+    if (titleElement) {
+
+        titleElement.textContent =
+            title;
+
+    }
+
+
+    if (messageElement) {
+
+        messageElement.textContent =
+            message;
+
+    }
 
 }
 
 
 // ==========================================
-// TIMER
+// WAIT
 // ==========================================
 
 function wait(milliseconds) {
 
     return new Promise(
-        function(resolve) {
+        function (resolve) {
 
             setTimeout(
                 resolve,
@@ -942,6 +1491,26 @@ function wait(milliseconds) {
             );
 
         }
+    );
+
+}
+
+
+// ==========================================
+// INITIAL DISPLAY
+// ==========================================
+
+for (
+    let cellNumber = 1;
+    cellNumber <= 4;
+    cellNumber++
+) {
+
+    updatePressure(
+        cellNumber,
+        pressureValues[
+            cellNumber - 1
+        ]
     );
 
 }
