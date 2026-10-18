@@ -1254,3 +1254,32 @@ body {
     }
 
 }
+/* ==========================================
+   ELEVATED PRESSURE STATE
+========================================== */
+
+:root {
+    --elevated: #D6A84B;
+    --elevated-light: #F4E8C8;
+}
+
+
+.cell-state.elevated {
+    color: var(--elevated);
+}
+
+
+.monitor-status.elevated {
+    background: var(--elevated);
+
+    color: #3F351D;
+}
+
+
+/* Sensor approaching threshold */
+
+.sensor-card.active {
+    transition:
+        background 0.5s ease,
+        outline-color 0.5s ease;
+}
