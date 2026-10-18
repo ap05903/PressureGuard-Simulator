@@ -1,6 +1,6 @@
 // ==========================================
 // PRESSUREGUARD SIMULATOR
-// REPOLISHED BEHAVIOUR VERSION
+// REPOLISHED FINAL BEHAVIOUR
 // SIMULATED DEMONSTRATION DATA
 // ==========================================
 
@@ -17,6 +17,7 @@ const WARNING_THRESHOLD = 35.0;
 const PEAK_PRESSURE = 38.0;
 const RELIEVED_PRESSURE = 8.5;
 
+const DETECTION_TIME = 650;
 const RISE_TIME = 6200;
 const VERIFY_TIME = 900;
 const RESPONSE_TIME = 700;
@@ -92,7 +93,8 @@ document.addEventListener(
 
 async function triggerPressure(cellNumber) {
 
-    // Do not trigger the same cell twice.
+    // Ignore repeated selection
+    // of the currently active cell.
 
     if (activeCell === cellNumber) {
         return;
@@ -123,7 +125,7 @@ async function triggerPressure(cellNumber) {
 
 
     // ======================================
-    // PREPARE SELECTED CELL
+    // GET ELEMENTS
     // ======================================
 
     const cell =
@@ -166,22 +168,22 @@ async function triggerPressure(cellNumber) {
         "deflated"
     );
 
+
     state.classList.remove(
         "warning",
         "elevated"
     );
 
+
     bar.classList.remove(
-        "high"
+        "high",
+        "elevated"
     );
+
 
     card.classList.add(
         "active"
     );
-
-
-    state.textContent =
-        "PRESSURE RISING";
 
 
     setMainSensor(
@@ -194,6 +196,48 @@ async function triggerPressure(cellNumber) {
     );
 
 
+    // ======================================
+    // LOAD DETECTION
+    // ======================================
+
+    state.textContent =
+        "LOAD DETECTED";
+
+
+    setMonitor(
+        "rising",
+        "DETECTING"
+    );
+
+
+    setMessage(
+        "Load Change Detected — Sensor "
+        + cellNumber,
+
+        "Sensor signal is being evaluated."
+    );
+
+
+    await wait(
+        DETECTION_TIME
+    );
+
+
+    if (
+        mySequence !== sequenceNumber
+    ) {
+        return;
+    }
+
+
+    // ======================================
+    // MONITORING
+    // ======================================
+
+    state.textContent =
+        "PRESSURE RISING";
+
+
     setMonitor(
         "rising",
         "MONITORING"
@@ -201,7 +245,9 @@ async function triggerPressure(cellNumber) {
 
 
     setMessage(
-        "Monitoring Sensor " + cellNumber,
+        "Monitoring Sensor "
+        + cellNumber,
+
         "Simulated contact pressure is increasing."
     );
 
@@ -229,7 +275,7 @@ async function triggerPressure(cellNumber) {
 
 
     // ======================================
-    // VERIFY HIGH READING
+    // VERIFY HIGH PRESSURE
     // ======================================
 
     state.textContent =
@@ -244,6 +290,7 @@ async function triggerPressure(cellNumber) {
 
     setMessage(
         "High Pressure Detected",
+
         "Controller is verifying the simulated pressure reading."
     );
 
@@ -261,7 +308,7 @@ async function triggerPressure(cellNumber) {
 
 
     // ======================================
-    // CONFIRMED THRESHOLD
+    // THRESHOLD CONFIRMED
     // ======================================
 
     state.textContent =
@@ -272,13 +319,21 @@ async function triggerPressure(cellNumber) {
         "elevated"
     );
 
+
     state.classList.add(
         "warning"
     );
 
+
+    bar.classList.remove(
+        "elevated"
+    );
+
+
     bar.classList.add(
         "high"
     );
+
 
     setWarningActive(
         true
@@ -328,6 +383,7 @@ async function triggerPressure(cellNumber) {
 
     setMessage(
         "Pressure Redistribution Active",
+
         "Exhaust valve opened. Cell "
         + cellNumber
         + " is deflating."
@@ -362,7 +418,7 @@ async function triggerPressure(cellNumber) {
 
 
     // ======================================
-    // RELIEVED STATE
+    // PRESSURE RELIEVED
     // ======================================
 
     pressureValues[cellNumber - 1] =
@@ -391,7 +447,8 @@ async function triggerPressure(cellNumber) {
 
 
     bar.classList.remove(
-        "high"
+        "high",
+        "elevated"
     );
 
 
@@ -451,14 +508,8 @@ function animateNaturalRise(
                     );
 
 
-                /*
-                   This curve intentionally avoids
-                   a perfectly linear increase.
-
-                   It rises faster initially,
-                   slows slightly in the middle,
-                   then continues upward.
-                */
+                // Faster initially,
+                // slightly slower through middle.
 
                 const curvedProgress =
                     progress < 0.55
@@ -487,7 +538,7 @@ function animateNaturalRise(
                     * curvedProgress;
 
 
-                // Gentle sensor-like variation.
+                // Subtle simulated sensor noise.
 
                 const variation1 =
                     Math.sin(
@@ -515,8 +566,6 @@ function animateNaturalRise(
                     )
                     * fadeNoise;
 
-
-                // Keep the reading sensible.
 
                 value =
                     Math.max(
@@ -620,11 +669,8 @@ function animateNaturalDeflation(
                     );
 
 
-                /*
-                   Exponential-style fall:
-                   faster at first,
-                   slower near the relieved value.
-                */
+                // Faster pressure reduction
+                // at first, slower near end.
 
                 const fallCurve =
                     (
@@ -739,7 +785,7 @@ function updatePressureState(
 
 
     // ======================================
-    // NORMAL RISING
+    // NORMAL
     // ======================================
 
     if (
@@ -776,13 +822,13 @@ function updatePressureState(
             "ELEVATED";
 
 
-        state.classList.add(
-            "elevated"
+        state.classList.remove(
+            "warning"
         );
 
 
-        state.classList.remove(
-            "warning"
+        state.classList.add(
+            "elevated"
         );
 
 
@@ -795,7 +841,7 @@ function updatePressureState(
 
 
     // ======================================
-    // ABOVE DEMO THRESHOLD
+    // HIGH PRESSURE
     // ======================================
 
     else {
@@ -825,7 +871,7 @@ function updatePressureState(
 
 
 // ==========================================
-// REINFLATION
+// REINFLATE PREVIOUS CELL
 // ==========================================
 
 function reinflateCell(cellNumber) {
@@ -835,15 +881,18 @@ function reinflateCell(cellNumber) {
             "cell" + cellNumber
         );
 
+
     const state =
         document.getElementById(
             "state" + cellNumber
         );
 
+
     const card =
         document.getElementById(
             "readingCard" + cellNumber
         );
+
 
     const bar =
         document.getElementById(
@@ -891,7 +940,8 @@ function reinflateCell(cellNumber) {
     if (bar) {
 
         bar.classList.remove(
-            "high"
+            "high",
+            "elevated"
         );
 
     }
@@ -909,10 +959,8 @@ function reinflateCell(cellNumber) {
 
     function animate(now) {
 
-        /*
-           Stop this reinflation animation if
-           the same cell becomes active again.
-        */
+        // Stop reinflation if this cell
+        // becomes active again.
 
         if (
             activeCell === cellNumber
@@ -934,10 +982,6 @@ function reinflateCell(cellNumber) {
                 1
             );
 
-
-        /*
-           Smooth pneumatic recovery.
-        */
 
         const curve =
             1 -
@@ -987,11 +1031,6 @@ function reinflateCell(cellNumber) {
             );
 
         } else {
-
-            /*
-               Don't lock permanently at exactly
-               12.0. Idle fluctuation resumes.
-            */
 
             pressureValues[
                 cellNumber - 1
@@ -1059,7 +1098,7 @@ function updatePressure(
 
 
     // ======================================
-    // PRESSURE BAR
+    // PRESSURE BAR WIDTH + COLOUR
     // ======================================
 
     const percentage =
@@ -1083,11 +1122,48 @@ function updatePressure(
         bar.style.width =
             percentage + "%";
 
+
+        // Reset colour state.
+
+        bar.classList.remove(
+            "elevated",
+            "high"
+        );
+
+
+        // RED: threshold exceeded.
+
+        if (
+            value >= WARNING_THRESHOLD
+        ) {
+
+            bar.classList.add(
+                "high"
+            );
+
+        }
+
+
+        // AMBER: elevated.
+
+        else if (
+            value >= ELEVATED_THRESHOLD
+        ) {
+
+            bar.classList.add(
+                "elevated"
+            );
+
+        }
+
+        // Otherwise no class is added,
+        // so normal CSS blue is used.
+
     }
 
 
     // ======================================
-    // MAIN MONITOR
+    // MAIN ACTIVE SENSOR DISPLAY
     // ======================================
 
     if (
@@ -1113,7 +1189,7 @@ function updatePressure(
 
 
 // ==========================================
-// IDLE SENSOR BEHAVIOUR
+// IDLE SENSOR FLUCTUATION
 // ==========================================
 
 function updateIdleSensors() {
@@ -1124,7 +1200,7 @@ function updateIdleSensors() {
         cellNumber++
     ) {
 
-        // Don't touch active sensor.
+        // Don't change active sensor.
 
         if (
             cellNumber === activeCell
@@ -1152,11 +1228,6 @@ function updateIdleSensors() {
             );
 
 
-        /*
-           Slowly drift toward the new target
-           rather than jumping instantly.
-        */
-
         pressureValues[
             cellNumber - 1
         ] +=
@@ -1181,7 +1252,7 @@ function updateIdleSensors() {
 }
 
 
-// Subtle update about twice per second.
+// Update approximately twice each second.
 
 setInterval(
     updateIdleSensors,
@@ -1289,6 +1360,7 @@ function setMessage(
         document.getElementById(
             "warningTitle"
         );
+
 
     const messageElement =
         document.getElementById(
