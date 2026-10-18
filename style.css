@@ -1,10 +1,12 @@
 /* ==========================================
-   PRESSUREGUARD THEME
+   PRESSUREGUARD — SINGLE SCREEN DASHBOARD
 ========================================== */
 
 :root {
+
     --navy: #344A68;
     --blue: #718BB8;
+
     --light-blue: #C9DAE4;
     --pale-blue: #E5EFF2;
 
@@ -17,549 +19,486 @@
     --warning: #B95D58;
     --warning-light: #F1D6D2;
 
-    --border: #D5DEE5;
 }
 
 
 /* ==========================================
-   PAGE
+   PAGE RESET
 ========================================== */
 
 * {
     box-sizing: border-box;
 }
 
+
+html,
 body {
+
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
 
-    background: var(--cream);
-    color: var(--text);
-}
-
-.page {
-    width: min(1100px, 92%);
-    margin: 0 auto;
-
-    padding: 40px 0;
-}
-
-
-/* ==========================================
-   HEADER
-========================================== */
-
-.header {
-    text-align: center;
-
-    padding: 25px 20px 35px;
-}
-
-.project-name {
-    margin: 0 0 8px;
-
-    color: var(--blue);
-
-    font-size: 14px;
-    font-weight: bold;
-
-    letter-spacing: 4px;
-}
-
-.header h1 {
-    margin: 0 0 12px;
-
-    color: var(--navy);
-
-    font-size: clamp(32px, 5vw, 55px);
-}
-
-.subtitle {
-    max-width: 650px;
-
-    margin: auto;
-
-    color: var(--muted);
-
-    font-size: 17px;
-    line-height: 1.6;
-}
-
-
-/* ==========================================
-   GENERAL
-========================================== */
-
-.section-label {
-    margin: 0 0 5px;
-
-    color: var(--blue);
-
-    font-size: 12px;
-    font-weight: bold;
-
-    letter-spacing: 2px;
-}
-
-h2 {
-    margin: 5px 0;
-
-    color: var(--navy);
-}
-
-
-/* ==========================================
-   SYSTEM STATUS
-========================================== */
-
-.system-status {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 20px;
-
-    margin-bottom: 20px;
-
-    padding: 15px 22px;
-
-    background: var(--navy);
-
-    color: white;
-
-    border-radius: 14px;
-}
-
-.online-dot {
-    display: inline-block;
-
-    width: 10px;
-    height: 10px;
-
-    margin-right: 8px;
-
-    background: #A8D5BA;
-
-    border-radius: 50%;
-}
-
-
-/* ==========================================
-   WARNING BOX
-========================================== */
-
-.warning-box {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 5px;
-
-    margin-bottom: 20px;
-
-    padding: 18px 22px;
-
-    background: var(--pale-blue);
-
-    border: 2px solid var(--light-blue);
-
-    border-radius: 14px;
-
-    color: var(--navy);
-
-    transition: 0.5s ease;
-}
-
-.warning-box.active {
-    background: var(--warning-light);
-
-    border-color: var(--warning);
-
-    color: var(--warning);
-}
-
-
-/* ==========================================
-   PRESSURE MONITOR
-========================================== */
-
-.pressure-monitor {
-    margin-bottom: 25px;
-
-    padding: 28px;
-
-    background: var(--navy);
-
-    color: white;
-
-    border-radius: 22px;
-
-    box-shadow:
-        0 10px 30px
-        rgba(52, 74, 104, 0.15);
-}
-
-.monitor-header {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 20px;
-
-    margin-bottom: 25px;
-}
-
-.pressure-monitor h2 {
-    color: white;
-}
-
-.pressure-monitor .section-label {
-    color: var(--light-blue);
-}
-
-
-/* ==========================================
-   MONITOR STATUS
-========================================== */
-
-.monitor-status {
-    padding: 9px 16px;
-
-    border-radius: 30px;
-
-    font-size: 12px;
-    font-weight: bold;
-
-    letter-spacing: 1px;
-
-    transition: 0.4s ease;
-}
-
-.monitor-status.normal {
-    background: var(--light-blue);
-
-    color: var(--navy);
-}
-
-.monitor-status.rising {
-    background: #E7D9A8;
-
-    color: #66551D;
-}
-
-.monitor-status.danger {
-    background: var(--warning);
-
-    color: white;
-}
-
-
-/* ==========================================
-   SENSOR READINGS
-========================================== */
-
-.pressure-readings {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 12px;
-}
-
-.pressure-reading {
-    padding: 15px;
-
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.15);
-
-    border-radius: 14px;
-
-    transition: 0.4s ease;
-}
-
-.pressure-reading span {
-    display: block;
-
-    margin-bottom: 7px;
-
-    font-size: 12px;
-
-    opacity: 0.8;
-}
-
-.pressure-reading strong {
-    font-size: 22px;
-}
-
-.pressure-reading.active {
-    background:
-        rgba(185, 93, 88, 0.18);
-
-    border-color: var(--warning);
-
-    transform: translateY(-3px);
-}
-
-
-/* ==========================================
-   PRESSURE BARS
-========================================== */
-
-.pressure-bar {
     width: 100%;
-    height: 8px;
-
-    margin-top: 12px;
-
-    overflow: hidden;
-
-    background:
-        rgba(255, 255, 255, 0.15);
-
-    border-radius: 10px;
-}
-
-.pressure-fill {
-    width: 24%;
     height: 100%;
 
-    background: var(--light-blue);
-
-    border-radius: 10px;
-
-    transition:
-        width 0.15s linear,
-        background 0.4s ease;
+    overflow: hidden;
 }
 
-.pressure-fill.high {
-    background: var(--warning);
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        var(--cream);
+
+    color:
+        var(--text);
 }
 
 
 /* ==========================================
-   LARGE PRESSURE DISPLAY
+   COMPLETE DASHBOARD
 ========================================== */
 
-.main-reading {
+.dashboard {
+
+    width: 100vw;
+    height: 100vh;
+
+    padding:
+        clamp(10px, 1.5vh, 18px)
+        clamp(14px, 2vw, 28px);
+
+    display: grid;
+
+    grid-template-rows:
+        auto
+        auto
+        1fr
+        auto
+        auto;
+
+    gap:
+        clamp(7px, 1vh, 12px);
+
+}
+
+
+/* ==========================================
+   TOP BAR
+========================================== */
+
+.topbar {
+
+    min-height: 58px;
+
     display: flex;
 
-    flex-direction: column;
+    justify-content:
+        space-between;
 
-    align-items: center;
+    align-items:
+        center;
 
-    margin-top: 25px;
+    gap: 20px;
 
-    padding: 25px;
+    padding:
+        10px 18px;
 
     background:
-        rgba(255, 255, 255, 0.07);
+        var(--navy);
 
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.10);
+    color:
+        white;
 
-    border-radius: 16px;
+    border-radius:
+        14px;
+
 }
 
-.main-reading > span:first-child {
-    font-size: 12px;
 
-    letter-spacing: 2px;
+.brand {
 
-    opacity: 0.8;
+    display: flex;
+
+    align-items:
+        center;
+
+    gap: 16px;
+
 }
 
-.main-reading strong {
-    margin: 6px 0;
+
+.brand-name {
 
     font-size:
-        clamp(40px, 8vw, 60px);
-}
+        clamp(15px, 1.5vw, 21px);
 
-.main-reading > span:not(:first-child) {
-    font-size: 12px;
+    font-weight:
+        800;
 
-    opacity: 0.75;
-}
+    letter-spacing:
+        2px;
 
-.simulation-notice {
-    margin-top: 13px;
-
-    padding: 6px 10px;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.20);
-
-    border-radius: 6px;
-
-    font-size: 9px;
-
-    letter-spacing: 1px;
-
-    opacity: 0.7;
 }
 
 
-/* ==========================================
-   THRESHOLD
-========================================== */
+.brand-description {
 
-.threshold-display {
+    font-size:
+        clamp(10px, 1vw, 14px);
+
+    opacity:
+        0.7;
+
+}
+
+
+.system-info {
+
     display: flex;
 
-    justify-content: space-between;
-    align-items: center;
+    align-items:
+        center;
 
-    gap: 15px;
+    gap: 20px;
 
-    margin-top: 15px;
+    font-size:
+        clamp(10px, 1vw, 13px);
 
-    padding: 13px 16px;
+}
+
+
+.system-active {
+
+    font-weight:
+        bold;
+
+}
+
+
+.online-dot {
+
+    display:
+        inline-block;
+
+    width:
+        9px;
+
+    height:
+        9px;
+
+    margin-right:
+        6px;
+
+    border-radius:
+        50%;
 
     background:
-        rgba(255, 255, 255, 0.06);
+        #A8D5BA;
 
-    border-radius: 10px;
-}
-
-.threshold-display span {
-    font-size: 10px;
-
-    letter-spacing: 1px;
-
-    opacity: 0.7;
-}
-
-.threshold-display strong {
-    color: var(--light-blue);
-
-    font-size: 15px;
 }
 
 
 /* ==========================================
-   CELL SIMULATOR
+   WARNING STRIP
 ========================================== */
 
-.simulator {
-    padding: 30px;
+.warning-strip {
 
-    background: var(--off-white);
+    min-height:
+        42px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        14px;
+
+    padding:
+        8px 16px;
+
+    background:
+        var(--pale-blue);
 
     border:
         2px solid
         var(--light-blue);
 
-    border-radius: 22px;
+    border-radius:
+        11px;
+
+    color:
+        var(--navy);
+
+    font-size:
+        clamp(10px, 1vw, 13px);
+
+    transition:
+        0.4s ease;
+
 }
 
-.simulator-heading {
-    display: flex;
 
-    justify-content: space-between;
-    align-items: flex-end;
+.warning-strip.active {
 
-    gap: 20px;
+    background:
+        var(--warning-light);
 
-    margin-bottom: 35px;
-}
+    border-color:
+        var(--warning);
 
+    color:
+        var(--warning);
 
-/* ==========================================
-   LEGEND
-========================================== */
-
-.legend {
-    display: flex;
-
-    gap: 18px;
-
-    font-size: 13px;
-}
-
-.legend span {
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-}
-
-.legend i {
-    display: inline-block;
-
-    width: 12px;
-    height: 12px;
-
-    border-radius: 50%;
-}
-
-.normal-dot {
-    background: var(--blue);
-}
-
-.high-dot {
-    background: var(--warning);
 }
 
 
 /* ==========================================
-   FOUR CELLS
+   MAIN GRID
+
+   LEFT = SENSOR
+   RIGHT = AIR CELL
 ========================================== */
 
-.cells {
+.main-panel {
+
+    min-height: 0;
+
     display: grid;
 
     grid-template-columns:
+        minmax(180px, 27%)
+        1fr;
+
+    grid-template-rows:
         repeat(4, 1fr);
 
-    gap: 18px;
+    column-gap:
+        clamp(14px, 2vw, 28px);
 
-    align-items: end;
+    row-gap:
+        clamp(6px, 1vh, 11px);
 
-    min-height: 300px;
-}
+    padding:
+        clamp(10px, 1.4vh, 16px);
 
-.cell-container {
-    text-align: center;
-}
+    background:
+        var(--off-white);
 
-.sensor-name {
-    margin-bottom: 10px;
+    border:
+        2px solid
+        var(--light-blue);
 
-    color: var(--muted);
+    border-radius:
+        18px;
 
-    font-size: 12px;
-    font-weight: bold;
-
-    letter-spacing: 1px;
 }
 
 
 /* ==========================================
-   INFLATED CELL
+   SENSOR CARD — LEFT
 ========================================== */
 
-.air-cell {
-    height: 200px;
+.sensor-card {
+
+    min-height: 0;
+
+    align-self:
+        stretch;
 
     display: flex;
 
-    justify-content: center;
-    align-items: center;
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    padding:
+        10px 14px;
+
+    background:
+        var(--navy);
+
+    color:
+        white;
+
+    border-radius:
+        12px;
+
+    transition:
+        0.4s ease;
+
+}
+
+
+.sensor-card.active {
+
+    background:
+        #594C59;
+
+    outline:
+        2px solid
+        var(--warning);
+
+}
+
+
+.sensor-top {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+}
+
+
+.sensor-top span {
+
+    font-size:
+        clamp(9px, 0.9vw, 12px);
+
+    letter-spacing:
+        1px;
+
+    opacity:
+        0.75;
+
+}
+
+
+.sensor-top strong {
+
+    font-size:
+        clamp(14px, 1.5vw, 21px);
+
+    white-space:
+        nowrap;
+
+}
+
+
+/* ==========================================
+   PRESSURE BAR
+========================================== */
+
+.pressure-bar {
+
+    width:
+        100%;
+
+    height:
+        7px;
+
+    margin-top:
+        9px;
+
+    overflow:
+        hidden;
+
+    background:
+        rgba(255, 255, 255, 0.17);
+
+    border-radius:
+        10px;
+
+}
+
+
+.pressure-fill {
+
+    width:
+        24%;
+
+    height:
+        100%;
+
+    background:
+        var(--light-blue);
+
+    border-radius:
+        10px;
+
+    transition:
+        width 0.15s linear,
+        background 0.3s ease;
+
+}
+
+
+.pressure-fill.high {
+
+    background:
+        var(--warning);
+
+}
+
+
+/* ==========================================
+   CELL AREA — RIGHT
+========================================== */
+
+.cell-area {
+
+    min-height: 0;
+
+    position:
+        relative;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+}
+
+
+/* ==========================================
+   AIR CELL
+
+   Horizontal like your sketch
+========================================== */
+
+.air-cell {
+
+    width:
+        100%;
+
+    height:
+        72%;
+
+    min-height:
+        48px;
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
 
     background:
         linear-gradient(
-            145deg,
+            180deg,
             var(--pale-blue),
             var(--light-blue)
         );
@@ -568,25 +507,44 @@ h2 {
         4px solid
         var(--blue);
 
-    border-radius: 38px;
+    border-radius:
+        999px;
 
-    color: var(--navy);
+    color:
+        var(--navy);
 
-    font-size: 18px;
-    font-weight: bold;
+    font-size:
+        clamp(14px, 1.6vw, 22px);
+
+    font-weight:
+        bold;
 
     box-shadow:
-        inset 0 -15px 25px
-        rgba(52, 74, 104, 0.10),
-        inset 0 10px 20px
-        rgba(255, 255, 255, 0.35);
+
+        inset 0 8px 15px
+        rgba(255, 255, 255, 0.45),
+
+        inset 0 -8px 15px
+        rgba(52, 74, 104, 0.08);
+
+
+    /*
+       Slow physical inflation /
+       deflation animation
+    */
 
     transition:
+
         height 3.5s ease,
-        background 0.8s ease,
-        border-color 0.8s ease,
-        color 0.8s ease,
-        border-radius 3.5s ease;
+
+        transform 3.5s ease,
+
+        background 0.7s ease,
+
+        border-color 0.7s ease,
+
+        color 0.7s ease;
+
 }
 
 
@@ -595,159 +553,313 @@ h2 {
 ========================================== */
 
 .air-cell.deflated {
-    height: 70px;
 
-    background: var(--warning-light);
+    height:
+        30%;
 
-    border-color: var(--warning);
+    min-height:
+        24px;
 
-    color: var(--warning);
+    transform:
+        scaleX(0.96);
 
-    border-radius: 22px;
+    background:
+        var(--warning-light);
+
+    border-color:
+        var(--warning);
+
+    color:
+        var(--warning);
+
 }
 
 
 /* ==========================================
-   CELL STATUS
+   CELL STATE
 ========================================== */
 
 .cell-state {
-    margin-top: 12px;
 
-    color: var(--blue);
+    width:
+        90px;
 
-    font-size: 13px;
-    font-weight: bold;
+    flex:
+        0 0 90px;
 
-    letter-spacing: 1px;
+    color:
+        var(--blue);
+
+    font-size:
+        clamp(9px, 0.9vw, 12px);
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        1px;
+
+    text-align:
+        center;
+
 }
 
+
 .cell-state.warning {
-    color: var(--warning);
+
+    color:
+        var(--warning);
+
 }
 
 
 /* ==========================================
-   CONTROLS
+   BOTTOM PANEL
+========================================== */
+
+.bottom-panel {
+
+    min-height:
+        66px;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    align-items:
+        center;
+
+    gap:
+        20px;
+
+    padding:
+        9px 16px;
+
+    background:
+        var(--navy);
+
+    color:
+        white;
+
+    border-radius:
+        14px;
+
+}
+
+
+/* ==========================================
+   ACTIVE READING
+========================================== */
+
+.active-reading {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, auto);
+
+    align-items:
+        center;
+
+    gap:
+        clamp(15px, 2vw, 35px);
+
+}
+
+
+.active-reading > div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        3px;
+
+}
+
+
+.small-label {
+
+    font-size:
+        8px;
+
+    letter-spacing:
+        1px;
+
+    opacity:
+        0.6;
+
+}
+
+
+.active-reading strong {
+
+    font-size:
+        clamp(11px, 1.1vw, 15px);
+
+}
+
+
+.current-pressure strong {
+
+    font-size:
+        clamp(17px, 2vw, 26px);
+
+}
+
+
+/* ==========================================
+   STATUS BADGE
+========================================== */
+
+.monitor-status {
+
+    padding:
+        8px 12px;
+
+    border-radius:
+        20px;
+
+    font-size:
+        clamp(8px, 0.8vw, 11px);
+
+    font-weight:
+        bold;
+
+    white-space:
+        nowrap;
+
+}
+
+
+.monitor-status.normal {
+
+    background:
+        var(--light-blue);
+
+    color:
+        var(--navy);
+
+}
+
+
+.monitor-status.rising {
+
+    background:
+        #E7D9A8;
+
+    color:
+        #66551D;
+
+}
+
+
+.monitor-status.danger {
+
+    background:
+        var(--warning);
+
+    color:
+        white;
+
+}
+
+
+/* ==========================================
+   BUTTON CONTROLS
 ========================================== */
 
 .controls {
-    margin-top: 25px;
 
-    padding: 28px;
+    display:
+        flex;
 
-    text-align: center;
+    align-items:
+        center;
 
-    background: var(--pale-blue);
+    gap:
+        12px;
 
-    border-radius: 20px;
 }
 
-.controls > p:not(.section-label) {
-    color: var(--muted);
+
+.control-label {
+
+    font-size:
+        8px;
+
+    letter-spacing:
+        1px;
+
+    opacity:
+        0.6;
+
 }
+
 
 .control-buttons {
-    display: flex;
 
-    justify-content: center;
+    display:
+        flex;
 
-    flex-wrap: wrap;
+    gap:
+        7px;
 
-    gap: 12px;
-
-    margin-top: 20px;
 }
+
 
 .control-buttons button {
-    width: 58px;
-    height: 58px;
 
-    border: none;
+    width:
+        38px;
 
-    border-radius: 14px;
-
-    background: var(--navy);
-
-    color: white;
-
-    font-size: 21px;
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: 0.2s ease;
-}
-
-.control-buttons button:hover {
-    background: var(--blue);
-
-    transform: translateY(-2px);
-}
-
-.control-buttons button:active {
-    transform: scale(0.95);
-}
-
-
-/* ==========================================
-   HOW IT WORKS
-========================================== */
-
-.how-it-works {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 15px;
-
-    margin-top: 25px;
-
-    padding: 25px;
-
-    background: var(--off-white);
+    height:
+        38px;
 
     border:
         1px solid
-        var(--border);
+        rgba(255, 255, 255, 0.20);
 
-    border-radius: 18px;
+    border-radius:
+        9px;
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    color:
+        white;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+
 }
 
-.process-step {
-    display: flex;
 
-    gap: 12px;
+.control-buttons button:hover {
 
-    flex: 1;
+    background:
+        var(--blue);
+
 }
 
-.step-number {
-    color: var(--blue);
 
-    font-size: 24px;
-    font-weight: bold;
-}
+.control-buttons button:active {
 
-.process-step strong {
-    color: var(--navy);
-}
+    transform:
+        scale(0.93);
 
-.process-step p {
-    margin-bottom: 0;
-
-    color: var(--muted);
-
-    font-size: 13px;
-
-    line-height: 1.5;
-}
-
-.process-arrow {
-    color: var(--blue);
-
-    font-size: 24px;
 }
 
 
@@ -755,115 +867,182 @@ h2 {
    DISCLAIMER
 ========================================== */
 
-.prototype-notice {
-    margin-top: 25px;
+.simulation-note {
 
-    padding: 20px 22px;
+    text-align:
+        center;
 
-    background: var(--off-white);
+    color:
+        var(--muted);
 
-    border-left:
-        5px solid
-        var(--blue);
+    font-size:
+        8px;
 
-    border-radius: 10px;
-}
+    letter-spacing:
+        1px;
 
-.prototype-notice strong {
-    color: var(--navy);
-}
-
-.prototype-notice p {
-    margin-bottom: 0;
-
-    color: var(--muted);
-
-    font-size: 12px;
-
-    line-height: 1.6;
 }
 
 
 /* ==========================================
-   FOOTER
+   SMALLER LANDSCAPE SCREENS
 ========================================== */
 
-footer {
-    margin-top: 35px;
+@media (max-height: 700px) {
 
-    padding: 20px;
+    .dashboard {
 
-    text-align: center;
+        padding:
+            8px 14px;
 
-    color: var(--blue);
+        gap:
+            6px;
 
-    font-size: 13px;
+    }
+
+
+    .topbar {
+
+        min-height:
+            45px;
+
+        padding:
+            7px 14px;
+
+    }
+
+
+    .warning-strip {
+
+        min-height:
+            34px;
+
+        padding:
+            5px 12px;
+
+    }
+
+
+    .main-panel {
+
+        padding:
+            8px;
+
+        row-gap:
+            5px;
+
+    }
+
+
+    .sensor-card {
+
+        padding:
+            6px 11px;
+
+    }
+
+
+    .pressure-bar {
+
+        margin-top:
+            5px;
+
+        height:
+            5px;
+
+    }
+
+
+    .bottom-panel {
+
+        min-height:
+            52px;
+
+        padding:
+            6px 12px;
+
+    }
+
+
+    .control-buttons button {
+
+        width:
+            32px;
+
+        height:
+            32px;
+
+    }
+
 }
 
 
 /* ==========================================
-   MOBILE / IPAD
+   PORTRAIT / NARROW SCREEN FALLBACK
 ========================================== */
 
-@media (max-width: 700px) {
+@media (max-width: 750px) {
 
-    .page {
-        width: 94%;
+    .brand-description {
+
+        display:
+            none;
+
     }
 
-    .system-status {
-        flex-direction: column;
 
-        align-items: flex-start;
+    .system-info {
+
+        gap:
+            8px;
+
     }
 
-    .monitor-header {
-        flex-direction: column;
 
-        align-items: flex-start;
-    }
+    .main-panel {
 
-    .pressure-readings {
         grid-template-columns:
-            repeat(2, 1fr);
+            34%
+            1fr;
+
     }
 
-    .simulator-heading {
-        flex-direction: column;
 
-        align-items: flex-start;
+    .cell-state {
+
+        width:
+            62px;
+
+        flex-basis:
+            62px;
+
     }
 
-    .cells {
+
+    .bottom-panel {
+
         grid-template-columns:
-            repeat(2, 1fr);
+            1fr;
 
-        min-height: auto;
+        gap:
+            6px;
+
     }
 
-    .air-cell {
-        height: 150px;
+
+    .active-reading {
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
     }
 
-    .air-cell.deflated {
-        height: 60px;
+
+    .controls {
+
+        justify-content:
+            center;
+
     }
 
-    .how-it-works {
-        flex-direction: column;
-
-        align-items: stretch;
-    }
-
-    .process-arrow {
-        text-align: center;
-
-        transform: rotate(90deg);
-    }
-
-    .threshold-display {
-        flex-direction: column;
-
-        align-items: flex-start;
-    }
 }
