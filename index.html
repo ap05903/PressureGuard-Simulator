@@ -12,337 +12,616 @@
 
 <body>
 
-    <main class="page">
+<main class="page">
 
-        <header class="header">
+    <!-- =====================================
+         HEADER
+    ====================================== -->
 
-            <p class="project-name">
-                PRESSUREGUARD
-            </p>
+    <header class="header">
 
-            <h1>
-                Smart Pressure Redistribution Simulator
-            </h1>
+        <p class="project-name">
+            PRESSUREGUARD
+        </p>
 
-            <p class="subtitle">
-                Interactive demonstration of pressure detection
-                and automatic air-cell response
-            </p>
+        <h1>
+            Smart Pressure Redistribution Simulator
+        </h1>
 
-        </header>
+        <p class="subtitle">
+            Interactive demonstration of pressure detection
+            and automatic air-cell response
+        </p>
+
+    </header>
 
 
-        <!-- SYSTEM STATUS -->
+    <!-- =====================================
+         SYSTEM STATUS
+    ====================================== -->
 
-        <section class="system-status">
+    <section class="system-status">
+
+        <div>
+            <span class="online-dot"></span>
+            <strong>SYSTEM ACTIVE</strong>
+        </div>
+
+        <div>
+            ESP32 Controller:
+            <strong>ONLINE</strong>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         WARNING MESSAGE
+    ====================================== -->
+
+    <section
+        id="warningBox"
+        class="warning-box"
+        aria-live="polite"
+    >
+
+        <strong id="warningTitle">
+            System Ready
+        </strong>
+
+        <span id="warningMessage">
+            All four pressure cells are inflated.
+        </span>
+
+    </section>
+
+
+    <!-- =====================================
+         LIVE PRESSURE MONITOR
+    ====================================== -->
+
+    <section class="pressure-monitor">
+
+        <div class="monitor-header">
 
             <div>
-                <span class="online-dot"></span>
-                <strong>SYSTEM ACTIVE</strong>
+
+                <p class="section-label">
+                    LIVE SENSOR MONITOR
+                </p>
+
+                <h2>
+                    Pressure Detection Screen
+                </h2>
+
             </div>
 
-            <div>
-                ESP32 Controller:
-                <strong>ONLINE</strong>
+
+            <div
+                id="monitorStatus"
+                class="monitor-status normal"
+            >
+                NORMAL
             </div>
 
-        </section>
+        </div>
 
 
-        <!-- WARNING MESSAGE -->
+        <!-- SENSOR READINGS -->
 
-        <section
-            id="warningBox"
-            class="warning-box"
-            aria-live="polite"
-        >
+        <div class="pressure-readings">
 
-            <strong id="warningTitle">
-                System Ready
-            </strong>
 
-            <span id="warningMessage">
-                All four pressure cells are inflated.
+            <!-- SENSOR 1 -->
+
+            <div
+                class="pressure-reading"
+                id="readingCard1"
+            >
+
+                <span>
+                    Sensor 1
+                </span>
+
+                <strong id="pressure1">
+                    12 mmHg
+                </strong>
+
+                <div class="pressure-bar">
+
+                    <div
+                        id="bar1"
+                        class="pressure-fill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SENSOR 2 -->
+
+            <div
+                class="pressure-reading"
+                id="readingCard2"
+            >
+
+                <span>
+                    Sensor 2
+                </span>
+
+                <strong id="pressure2">
+                    12 mmHg
+                </strong>
+
+                <div class="pressure-bar">
+
+                    <div
+                        id="bar2"
+                        class="pressure-fill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SENSOR 3 -->
+
+            <div
+                class="pressure-reading"
+                id="readingCard3"
+            >
+
+                <span>
+                    Sensor 3
+                </span>
+
+                <strong id="pressure3">
+                    12 mmHg
+                </strong>
+
+                <div class="pressure-bar">
+
+                    <div
+                        id="bar3"
+                        class="pressure-fill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SENSOR 4 -->
+
+            <div
+                class="pressure-reading"
+                id="readingCard4"
+            >
+
+                <span>
+                    Sensor 4
+                </span>
+
+                <strong id="pressure4">
+                    12 mmHg
+                </strong>
+
+                <div class="pressure-bar">
+
+                    <div
+                        id="bar4"
+                        class="pressure-fill"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- LARGE ACTIVE READING -->
+
+        <div class="main-reading">
+
+            <span id="mainSensorLabel">
+                SYSTEM MONITORING
             </span>
 
-        </section>
+            <strong id="mainPressure">
+                12 mmHg
+            </strong>
+
+            <span id="mainPressureText">
+                Simulated Pressure
+            </span>
+
+            <small class="simulation-notice">
+                SIMULATED DATA — NOT A CLINICAL MEASUREMENT
+            </small>
+
+        </div>
 
 
-        <!-- MAIN SIMULATOR -->
+        <div class="threshold-display">
 
-        <section class="simulator">
+            <span>
+                DEMONSTRATION WARNING THRESHOLD
+            </span>
 
-            <div class="simulator-heading">
+            <strong>
+                35 mmHg
+            </strong>
 
-                <div>
+        </div>
 
-                    <p class="section-label">
-                        LIVE SIMULATION
-                    </p>
-
-                    <h2>
-                        Pressure Cell Monitor
-                    </h2>
-
-                </div>
-
-                <div class="legend">
-
-                    <span>
-                        <i class="normal-dot"></i>
-                        Normal
-                    </span>
-
-                    <span>
-                        <i class="high-dot"></i>
-                        High Pressure
-                    </span>
-
-                </div>
-
-            </div>
+    </section>
 
 
-            <!-- FOUR CELLS -->
+    <!-- =====================================
+         MAIN CELL SIMULATOR
+    ====================================== -->
 
-            <div class="cells">
+    <section class="simulator">
 
+        <div class="simulator-heading">
 
-                <article class="cell-container">
+            <div>
 
-                    <p class="sensor-name">
-                        SENSOR 1
-                    </p>
+                <p class="section-label">
+                    LIVE SIMULATION
+                </p>
 
-                    <div
-                        class="air-cell"
-                        id="cell1"
-                    >
-                        CELL 1
-                    </div>
-
-                    <p
-                        class="cell-state"
-                        id="state1"
-                    >
-                        INFLATED
-                    </p>
-
-                </article>
-
-
-                <article class="cell-container">
-
-                    <p class="sensor-name">
-                        SENSOR 2
-                    </p>
-
-                    <div
-                        class="air-cell"
-                        id="cell2"
-                    >
-                        CELL 2
-                    </div>
-
-                    <p
-                        class="cell-state"
-                        id="state2"
-                    >
-                        INFLATED
-                    </p>
-
-                </article>
-
-
-                <article class="cell-container">
-
-                    <p class="sensor-name">
-                        SENSOR 3
-                    </p>
-
-                    <div
-                        class="air-cell"
-                        id="cell3"
-                    >
-                        CELL 3
-                    </div>
-
-                    <p
-                        class="cell-state"
-                        id="state3"
-                    >
-                        INFLATED
-                    </p>
-
-                </article>
-
-
-                <article class="cell-container">
-
-                    <p class="sensor-name">
-                        SENSOR 4
-                    </p>
-
-                    <div
-                        class="air-cell"
-                        id="cell4"
-                    >
-                        CELL 4
-                    </div>
-
-                    <p
-                        class="cell-state"
-                        id="state4"
-                    >
-                        INFLATED
-                    </p>
-
-                </article>
-
+                <h2>
+                    Pressure Cell Monitor
+                </h2>
 
             </div>
 
-        </section>
 
+            <div class="legend">
 
-        <!-- CONTROLS -->
-
-        <section class="controls">
-
-            <p class="section-label">
-                PRESSURE SENSOR SIMULATION
-            </p>
-
-            <h2>
-                Select a high-pressure area
-            </h2>
-
-            <p>
-                Press keyboard key
-                <strong>1, 2, 3 or 4</strong>
-                or tap a button below.
-            </p>
-
-
-            <div class="control-buttons">
-
-                <button type="button" data-cell="1">
-                    1
-                </button>
-
-                <button type="button" data-cell="2">
-                    2
-                </button>
-
-                <button type="button" data-cell="3">
-                    3
-                </button>
-
-                <button type="button" data-cell="4">
-                    4
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- HOW IT WORKS -->
-
-        <section class="how-it-works">
-
-            <div class="process-step">
-
-                <span class="step-number">
-                    01
+                <span>
+                    <i class="normal-dot"></i>
+                    Normal
                 </span>
 
-                <div>
-
-                    <strong>
-                        Pressure Detected
-                    </strong>
-
-                    <p>
-                        A sensor detects excessive
-                        contact force at a cell.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="process-arrow">
-                →
-            </div>
-
-
-            <div class="process-step">
-
-                <span class="step-number">
-                    02
+                <span>
+                    <i class="high-dot"></i>
+                    Demo Threshold Exceeded
                 </span>
 
-                <div>
+            </div>
 
-                    <strong>
-                        Controller Responds
-                    </strong>
+        </div>
 
-                    <p>
-                        The controller identifies
-                        the affected pressure area.
-                    </p>
 
+        <!-- FOUR CELLS -->
+
+        <div class="cells">
+
+
+            <!-- CELL 1 -->
+
+            <article class="cell-container">
+
+                <p class="sensor-name">
+                    SENSOR 1
+                </p>
+
+                <div
+                    class="air-cell"
+                    id="cell1"
+                >
+                    CELL 1
                 </div>
 
-            </div>
+                <p
+                    class="cell-state"
+                    id="state1"
+                >
+                    INFLATED
+                </p>
+
+            </article>
 
 
-            <div class="process-arrow">
-                →
-            </div>
+            <!-- CELL 2 -->
 
+            <article class="cell-container">
 
-            <div class="process-step">
+                <p class="sensor-name">
+                    SENSOR 2
+                </p>
 
-                <span class="step-number">
-                    03
-                </span>
-
-                <div>
-
-                    <strong>
-                        Pressure Redistributed
-                    </strong>
-
-                    <p>
-                        The affected cell deflates
-                        while the other cells
-                        remain inflated.
-                    </p>
-
+                <div
+                    class="air-cell"
+                    id="cell2"
+                >
+                    CELL 2
                 </div>
 
+                <p
+                    class="cell-state"
+                    id="state2"
+                >
+                    INFLATED
+                </p>
+
+            </article>
+
+
+            <!-- CELL 3 -->
+
+            <article class="cell-container">
+
+                <p class="sensor-name">
+                    SENSOR 3
+                </p>
+
+                <div
+                    class="air-cell"
+                    id="cell3"
+                >
+                    CELL 3
+                </div>
+
+                <p
+                    class="cell-state"
+                    id="state3"
+                >
+                    INFLATED
+                </p>
+
+            </article>
+
+
+            <!-- CELL 4 -->
+
+            <article class="cell-container">
+
+                <p class="sensor-name">
+                    SENSOR 4
+                </p>
+
+                <div
+                    class="air-cell"
+                    id="cell4"
+                >
+                    CELL 4
+                </div>
+
+                <p
+                    class="cell-state"
+                    id="state4"
+                >
+                    INFLATED
+                </p>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         CONTROLS
+    ====================================== -->
+
+    <section class="controls">
+
+        <p class="section-label">
+            PRESSURE SENSOR SIMULATION
+        </p>
+
+        <h2>
+            Select a high-pressure area
+        </h2>
+
+        <p>
+            Press keyboard key
+            <strong>1, 2, 3 or 4</strong>
+            or tap a button below.
+        </p>
+
+
+        <div class="control-buttons">
+
+            <button
+                type="button"
+                data-cell="1"
+            >
+                1
+            </button>
+
+            <button
+                type="button"
+                data-cell="2"
+            >
+                2
+            </button>
+
+            <button
+                type="button"
+                data-cell="3"
+            >
+                3
+            </button>
+
+            <button
+                type="button"
+                data-cell="4"
+            >
+                4
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         HOW IT WORKS
+    ====================================== -->
+
+    <section class="how-it-works">
+
+
+        <!-- STEP 1 -->
+
+        <div class="process-step">
+
+            <span class="step-number">
+                01
+            </span>
+
+            <div>
+
+                <strong>
+                    Pressure Increases
+                </strong>
+
+                <p>
+                    The simulator generates an increasing
+                    pressure reading at the selected cell.
+                </p>
+
             </div>
 
-        </section>
+        </div>
 
 
-        <footer>
-
-            PressureGuard
-            •
-            Smart Repositioning & Pressure Injury Prevention System
-
-        </footer>
+        <div class="process-arrow">
+            →
+        </div>
 
 
-    </main>
+        <!-- STEP 2 -->
+
+        <div class="process-step">
+
+            <span class="step-number">
+                02
+            </span>
+
+            <div>
+
+                <strong>
+                    Threshold Exceeded
+                </strong>
+
+                <p>
+                    When the simulated reading exceeds
+                    the demonstration threshold, the
+                    system activates a warning.
+                </p>
+
+            </div>
+
+        </div>
 
 
-    <script src="script.js"></script>
+        <div class="process-arrow">
+            →
+        </div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="process-step">
+
+            <span class="step-number">
+                03
+            </span>
+
+            <div>
+
+                <strong>
+                    Cell Deflates
+                </strong>
+
+                <p>
+                    The selected cell slowly deflates
+                    to demonstrate pressure relief.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="process-arrow">
+            →
+        </div>
+
+
+        <!-- STEP 4 -->
+
+        <div class="process-step">
+
+            <span class="step-number">
+                04
+            </span>
+
+            <div>
+
+                <strong>
+                    Pressure Redistributed
+                </strong>
+
+                <p>
+                    When another cell is selected,
+                    the previous cell reinflates while
+                    the newly selected cell responds.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         DISCLAIMER
+    ====================================== -->
+
+    <section class="prototype-notice">
+
+        <strong>
+            Prototype Simulation
+        </strong>
+
+        <p>
+            Pressure values displayed on this website are
+            simulated demonstration data and are not measurements
+            obtained from the physical prototype or a clinical device.
+            The warning threshold is used only to demonstrate
+            the PressureGuard control concept.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer>
+
+        PressureGuard
+        •
+        Smart Pressure Redistribution Prototype
+
+    </footer>
+
+</main>
+
+
+<script src="script.js"></script>
 
 </body>
 
