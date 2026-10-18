@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PressureGuard Simulator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="page">
+
+        <header class="header">
+
+            <p class="project-name">
+                PRESSUREGUARD
+            </p>
+
+            <h1>
+                Smart Pressure Redistribution Simulator
+            </h1>
+
+            <p class="subtitle">
+                Interactive demonstration of pressure detection
+                and automatic air-cell response
+            </p>
+
+        </header>
+
+
+        <!-- SYSTEM STATUS -->
+
+        <section class="system-status">
+
+            <div>
+                <span class="online-dot"></span>
+                <strong>SYSTEM ACTIVE</strong>
+            </div>
+
+            <div>
+                ESP32 Controller:
+                <strong>ONLINE</strong>
+            </div>
+
+        </section>
+
+
+        <!-- WARNING MESSAGE -->
+
+        <section
+            id="warningBox"
+            class="warning-box"
+            aria-live="polite"
+        >
+
+            <strong id="warningTitle">
+                System Ready
+            </strong>
+
+            <span id="warningMessage">
+                All four pressure cells are inflated.
+            </span>
+
+        </section>
+
+
+        <!-- MAIN SIMULATOR -->
+
+        <section class="simulator">
+
+            <div class="simulator-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        LIVE SIMULATION
+                    </p>
+
+                    <h2>
+                        Pressure Cell Monitor
+                    </h2>
+
+                </div>
+
+                <div class="legend">
+
+                    <span>
+                        <i class="normal-dot"></i>
+                        Normal
+                    </span>
+
+                    <span>
+                        <i class="high-dot"></i>
+                        High Pressure
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOUR CELLS -->
+
+            <div class="cells">
+
+
+                <article class="cell-container">
+
+                    <p class="sensor-name">
+                        SENSOR 1
+                    </p>
+
+                    <div
+                        class="air-cell"
+                        id="cell1"
+                    >
+                        CELL 1
+                    </div>
+
+                    <p
+                        class="cell-state"
+                        id="state1"
+                    >
+                        INFLATED
+                    </p>
+
+                </article>
+
+
+                <article class="cell-container">
+
+                    <p class="sensor-name">
+                        SENSOR 2
+                    </p>
+
+                    <div
+                        class="air-cell"
+                        id="cell2"
+                    >
+                        CELL 2
+                    </div>
+
+                    <p
+                        class="cell-state"
+                        id="state2"
+                    >
+                        INFLATED
+                    </p>
+
+                </article>
+
+
+                <article class="cell-container">
+
+                    <p class="sensor-name">
+                        SENSOR 3
+                    </p>
+
+                    <div
+                        class="air-cell"
+                        id="cell3"
+                    >
+                        CELL 3
+                    </div>
+
+                    <p
+                        class="cell-state"
+                        id="state3"
+                    >
+                        INFLATED
+                    </p>
+
+                </article>
+
+
+                <article class="cell-container">
+
+                    <p class="sensor-name">
+                        SENSOR 4
+                    </p>
+
+                    <div
+                        class="air-cell"
+                        id="cell4"
+                    >
+                        CELL 4
+                    </div>
+
+                    <p
+                        class="cell-state"
+                        id="state4"
+                    >
+                        INFLATED
+                    </p>
+
+                </article>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- CONTROLS -->
+
+        <section class="controls">
+
+            <p class="section-label">
+                PRESSURE SENSOR SIMULATION
+            </p>
+
+            <h2>
+                Select a high-pressure area
+            </h2>
+
+            <p>
+                Press keyboard key
+                <strong>1, 2, 3 or 4</strong>
+                or tap a button below.
+            </p>
+
+
+            <div class="control-buttons">
+
+                <button type="button" data-cell="1">
+                    1
+                </button>
+
+                <button type="button" data-cell="2">
+                    2
+                </button>
+
+                <button type="button" data-cell="3">
+                    3
+                </button>
+
+                <button type="button" data-cell="4">
+                    4
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- HOW IT WORKS -->
+
+        <section class="how-it-works">
+
+            <div class="process-step">
+
+                <span class="step-number">
+                    01
+                </span>
+
+                <div>
+
+                    <strong>
+                        Pressure Detected
+                    </strong>
+
+                    <p>
+                        A sensor detects excessive
+                        contact force at a cell.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="process-arrow">
+                →
+            </div>
+
+
+            <div class="process-step">
+
+                <span class="step-number">
+                    02
+                </span>
+
+                <div>
+
+                    <strong>
+                        Controller Responds
+                    </strong>
+
+                    <p>
+                        The controller identifies
+                        the affected pressure area.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="process-arrow">
+                →
+            </div>
+
+
+            <div class="process-step">
+
+                <span class="step-number">
+                    03
+                </span>
+
+                <div>
+
+                    <strong>
+                        Pressure Redistributed
+                    </strong>
+
+                    <p>
+                        The affected cell deflates
+                        while the other cells
+                        remain inflated.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+
+            PressureGuard
+            •
+            Smart Repositioning & Pressure Injury Prevention System
+
+        </footer>
+
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
