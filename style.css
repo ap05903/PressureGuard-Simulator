@@ -1283,3 +1283,36 @@ body {
         background 0.5s ease,
         outline-color 0.5s ease;
 }
+
+/* ==========================================
+   PRESSURE BAR STATES
+========================================== */
+
+/* Normal */
+.pressure-fill {
+    background: var(--light-blue);
+    transition:
+        width 0.15s linear,
+        background 0.5s ease,
+        box-shadow 0.5s ease;
+}
+
+
+/* Elevated */
+.pressure-fill.elevated {
+    background: #D6A84B;
+
+    box-shadow:
+        0 0 7px
+        rgba(214, 168, 75, 0.35);
+}
+
+
+/* High pressure */
+.pressure-fill.high {
+    background: var(--warning);
+
+    box-shadow:
+        0 0 8px
+        rgba(185, 93, 88, 0.45);
+}
