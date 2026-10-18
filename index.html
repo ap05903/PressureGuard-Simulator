@@ -14,19 +14,13 @@
 
 <main class="page">
 
-    <!-- =====================================
-         HEADER
-    ====================================== -->
+    <!-- HEADER -->
 
     <header class="header">
 
-        <p class="project-name">
-            PRESSUREGUARD
-        </p>
+        <p class="project-name">PRESSUREGUARD</p>
 
-        <h1>
-            Smart Pressure Redistribution Simulator
-        </h1>
+        <h1>Smart Pressure Redistribution Simulator</h1>
 
         <p class="subtitle">
             Interactive demonstration of pressure detection
@@ -36,9 +30,7 @@
     </header>
 
 
-    <!-- =====================================
-         SYSTEM STATUS
-    ====================================== -->
+    <!-- SYSTEM STATUS -->
 
     <section class="system-status">
 
@@ -55,9 +47,7 @@
     </section>
 
 
-    <!-- =====================================
-         WARNING MESSAGE
-    ====================================== -->
+    <!-- WARNING BOX -->
 
     <section
         id="warningBox"
@@ -76,16 +66,13 @@
     </section>
 
 
-    <!-- =====================================
-         LIVE PRESSURE MONITOR
-    ====================================== -->
+    <!-- LIVE PRESSURE MONITOR -->
 
     <section class="pressure-monitor">
 
         <div class="monitor-header">
 
             <div>
-
                 <p class="section-label">
                     LIVE SENSOR MONITOR
                 </p>
@@ -93,9 +80,7 @@
                 <h2>
                     Pressure Detection Screen
                 </h2>
-
             </div>
-
 
             <div
                 id="monitorStatus"
@@ -107,116 +92,83 @@
         </div>
 
 
-        <!-- SENSOR READINGS -->
+        <!-- FOUR SENSOR READINGS -->
 
         <div class="pressure-readings">
-
-
-            <!-- SENSOR 1 -->
 
             <div
                 class="pressure-reading"
                 id="readingCard1"
             >
-
-                <span>
-                    Sensor 1
-                </span>
+                <span>Sensor 1</span>
 
                 <strong id="pressure1">
                     12 mmHg
                 </strong>
 
                 <div class="pressure-bar">
-
                     <div
                         id="bar1"
                         class="pressure-fill"
                     ></div>
-
                 </div>
-
             </div>
 
-
-            <!-- SENSOR 2 -->
 
             <div
                 class="pressure-reading"
                 id="readingCard2"
             >
-
-                <span>
-                    Sensor 2
-                </span>
+                <span>Sensor 2</span>
 
                 <strong id="pressure2">
                     12 mmHg
                 </strong>
 
                 <div class="pressure-bar">
-
                     <div
                         id="bar2"
                         class="pressure-fill"
                     ></div>
-
                 </div>
-
             </div>
 
-
-            <!-- SENSOR 3 -->
 
             <div
                 class="pressure-reading"
                 id="readingCard3"
             >
-
-                <span>
-                    Sensor 3
-                </span>
+                <span>Sensor 3</span>
 
                 <strong id="pressure3">
                     12 mmHg
                 </strong>
 
                 <div class="pressure-bar">
-
                     <div
                         id="bar3"
                         class="pressure-fill"
                     ></div>
-
                 </div>
-
             </div>
 
-
-            <!-- SENSOR 4 -->
 
             <div
                 class="pressure-reading"
                 id="readingCard4"
             >
-
-                <span>
-                    Sensor 4
-                </span>
+                <span>Sensor 4</span>
 
                 <strong id="pressure4">
                     12 mmHg
                 </strong>
 
                 <div class="pressure-bar">
-
                     <div
                         id="bar4"
                         class="pressure-fill"
                     ></div>
-
                 </div>
-
             </div>
 
         </div>
@@ -234,7 +186,7 @@
                 12 mmHg
             </strong>
 
-            <span id="mainPressureText">
+            <span>
                 Simulated Pressure
             </span>
 
@@ -244,6 +196,8 @@
 
         </div>
 
+
+        <!-- DEMONSTRATION THRESHOLD -->
 
         <div class="threshold-display">
 
@@ -260,16 +214,13 @@
     </section>
 
 
-    <!-- =====================================
-         MAIN CELL SIMULATOR
-    ====================================== -->
+    <!-- AIR CELL SIMULATOR -->
 
     <section class="simulator">
 
         <div class="simulator-heading">
 
             <div>
-
                 <p class="section-label">
                     LIVE SIMULATION
                 </p>
@@ -277,9 +228,7 @@
                 <h2>
                     Pressure Cell Monitor
                 </h2>
-
             </div>
-
 
             <div class="legend">
 
@@ -290,15 +239,13 @@
 
                 <span>
                     <i class="high-dot"></i>
-                    Demo Threshold Exceeded
+                    Threshold Exceeded
                 </span>
 
             </div>
 
         </div>
 
-
-        <!-- FOUR CELLS -->
 
         <div class="cells">
 
@@ -407,9 +354,7 @@
     </section>
 
 
-    <!-- =====================================
-         CONTROLS
-    ====================================== -->
+    <!-- CONTROLS -->
 
     <section class="controls">
 
@@ -430,31 +375,19 @@
 
         <div class="control-buttons">
 
-            <button
-                type="button"
-                data-cell="1"
-            >
+            <button type="button" data-cell="1">
                 1
             </button>
 
-            <button
-                type="button"
-                data-cell="2"
-            >
+            <button type="button" data-cell="2">
                 2
             </button>
 
-            <button
-                type="button"
-                data-cell="3"
-            >
+            <button type="button" data-cell="3">
                 3
             </button>
 
-            <button
-                type="button"
-                data-cell="4"
-            >
+            <button type="button" data-cell="4">
                 4
             </button>
 
@@ -463,121 +396,86 @@
     </section>
 
 
-    <!-- =====================================
-         HOW IT WORKS
-    ====================================== -->
+    <!-- HOW IT WORKS -->
 
     <section class="how-it-works">
 
-
-        <!-- STEP 1 -->
-
         <div class="process-step">
 
-            <span class="step-number">
-                01
-            </span>
+            <span class="step-number">01</span>
 
             <div>
-
                 <strong>
                     Pressure Increases
                 </strong>
 
                 <p>
-                    The simulator generates an increasing
-                    pressure reading at the selected cell.
+                    Simulated pressure rises at
+                    the selected cell.
                 </p>
-
             </div>
 
         </div>
 
 
-        <div class="process-arrow">
-            →
-        </div>
+        <div class="process-arrow">→</div>
 
-
-        <!-- STEP 2 -->
 
         <div class="process-step">
 
-            <span class="step-number">
-                02
-            </span>
+            <span class="step-number">02</span>
 
             <div>
-
                 <strong>
-                    Threshold Exceeded
+                    Warning Triggered
                 </strong>
 
                 <p>
-                    When the simulated reading exceeds
-                    the demonstration threshold, the
-                    system activates a warning.
+                    The reading crosses the
+                    demonstration threshold.
                 </p>
-
             </div>
 
         </div>
 
 
-        <div class="process-arrow">
-            →
-        </div>
+        <div class="process-arrow">→</div>
 
-
-        <!-- STEP 3 -->
 
         <div class="process-step">
 
-            <span class="step-number">
-                03
-            </span>
+            <span class="step-number">03</span>
 
             <div>
-
                 <strong>
                     Cell Deflates
                 </strong>
 
                 <p>
-                    The selected cell slowly deflates
-                    to demonstrate pressure relief.
+                    The selected cell slowly
+                    deflates.
                 </p>
-
             </div>
 
         </div>
 
 
-        <div class="process-arrow">
-            →
-        </div>
+        <div class="process-arrow">→</div>
 
-
-        <!-- STEP 4 -->
 
         <div class="process-step">
 
-            <span class="step-number">
-                04
-            </span>
+            <span class="step-number">04</span>
 
             <div>
-
                 <strong>
                     Pressure Redistributed
                 </strong>
 
                 <p>
-                    When another cell is selected,
-                    the previous cell reinflates while
-                    the newly selected cell responds.
+                    The system demonstrates
+                    redistribution of support.
                 </p>
-
             </div>
 
         </div>
@@ -585,9 +483,7 @@
     </section>
 
 
-    <!-- =====================================
-         DISCLAIMER
-    ====================================== -->
+    <!-- DISCLAIMER -->
 
     <section class="prototype-notice">
 
@@ -597,25 +493,18 @@
 
         <p>
             Pressure values displayed on this website are
-            simulated demonstration data and are not measurements
-            obtained from the physical prototype or a clinical device.
-            The warning threshold is used only to demonstrate
-            the PressureGuard control concept.
+            simulated demonstration data. They are not
+            measurements obtained from the physical prototype
+            or a clinical device. The warning threshold is
+            used only to demonstrate the PressureGuard
+            control concept.
         </p>
 
     </section>
 
 
-    <!-- =====================================
-         FOOTER
-    ====================================== -->
-
     <footer>
-
-        PressureGuard
-        •
-        Smart Pressure Redistribution Prototype
-
+        PressureGuard • Smart Pressure Redistribution Prototype
     </footer>
 
 </main>
