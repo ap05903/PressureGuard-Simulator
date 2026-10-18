@@ -1,23 +1,23 @@
 // ==========================================
 // PRESSUREGUARD SIMULATOR
-// SIMULATED DATA ONLY
+// SIMULATED DEMONSTRATION DATA
 // ==========================================
 
-// These values are for demonstration only.
-// They are NOT measurements from the physical
-// prototype and 35 mmHg is NOT being presented
-// as a validated clinical threshold.
-
 const BASE_PRESSURE = 12;
-const DEMO_WARNING_THRESHOLD = 35;
+const WARNING_THRESHOLD = 35;
 
-// Animation speed
-const PRESSURE_RISE_TIME = 4000; // 4 seconds
-const WARNING_PAUSE = 1200;      // 1.2 seconds
-const DEFLATE_TIME = 3500;        // 3.5 seconds
-const INFLATE_TIME = 3500;        // 3.5 seconds
+const PRESSURE_RISE_TIME = 4000;
+const WARNING_PAUSE_TIME = 1200;
+const DEFLATION_TIME = 3500;
+const INFLATION_TIME = 3500;
+
+
+// Current selected cell
 
 let activeCell = null;
+
+
+// Current simulated values
 
 let pressureValues = [
     BASE_PRESSURE,
@@ -26,36 +26,37 @@ let pressureValues = [
     BASE_PRESSURE
 ];
 
-// Used to cancel an old animation when
+
+// Used to cancel an old event when
 // another cell is selected.
-let animationToken = 0;
+
+let sequenceNumber = 0;
 
 
 // ==========================================
-// BUTTON CONTROLS
+// BUTTONS
 // ==========================================
 
-const buttons =
-    document.querySelectorAll("[data-cell]");
+document
+    .querySelectorAll("[data-cell]")
+    .forEach(function(button) {
 
-buttons.forEach(function(button) {
+        button.addEventListener(
+            "click",
+            function() {
 
-    button.addEventListener(
-        "click",
-        function() {
+                triggerPressure(
+                    Number(button.dataset.cell)
+                );
 
-            const cellNumber =
-                Number(button.dataset.cell);
+            }
+        );
 
-            triggerPressure(cellNumber);
-        }
-    );
-
-});
+    });
 
 
 // ==========================================
-// KEYBOARD CONTROLS
+// KEYBOARD
 // ==========================================
 
 document.addEventListener(
@@ -72,42 +73,57 @@ document.addEventListener(
             triggerPressure(
                 Number(event.key)
             );
+
         }
+
     }
 );
 
 
 // ==========================================
-// MAIN PRESSURE EVENT
+// MAIN SEQUENCE
 // ==========================================
 
 async function triggerPressure(cellNumber) {
 
-    // Cancel previous pressure-rise sequence
-    animationToken++;
+    sequenceNumber++;
 
-    const token = animationToken;
+    const mySequence =
+        sequenceNumber;
 
-    const previousCell = activeCell;
+    const previousCell =
+        activeCell;
 
-    activeCell = cellNumber;
+
+    // Do nothing if the same active
+    // cell is selected again.
+
+    if (
+        previousCell === cellNumber
+    ) {
+        return;
+    }
+
+
+    activeCell =
+        cellNumber;
 
 
     // --------------------------------------
     // REINFLATE PREVIOUS CELL
     // --------------------------------------
 
-    if (
-        previousCell !== null &&
-        previousCell !== cellNumber
-    ) {
+    if (previousCell !== null) {
 
-        inflateCell(previousCell);
+        reinflateCell(
+            previousCell
+        );
+
     }
 
 
     // --------------------------------------
-    // RESET OTHER CELLS
+    // RESET CELLS THAT ARE NOT INVOLVED
     // --------------------------------------
 
     for (let i = 1; i <= 4; i++) {
@@ -117,88 +133,113 @@ async function triggerPressure(cellNumber) {
             i !== previousCell
         ) {
 
-            setNormalCell(i);
+            resetCell(i);
+
         }
+
     }
 
 
     // --------------------------------------
-    // SELECTED CELL:
-    // PRESSURE BEGINS RISING
+    // NEW CELL STARTS NORMAL
     // --------------------------------------
 
-    const selectedCell =
+    const cell =
         document.getElementById(
             "cell" + cellNumber
         );
 
-    const selectedState =
+    const state =
         document.getElementById(
             "state" + cellNumber
         );
 
-    const readingCard =
+    const card =
         document.getElementById(
             "readingCard" + cellNumber
         );
 
 
-    // Make sure selected cell begins inflated
-
-    selectedCell.classList.remove(
+    cell.classList.remove(
         "deflated"
     );
 
-    selectedState.classList.remove(
+    state.classList.remove(
         "warning"
     );
 
-    selectedState.textContent =
+    state.textContent =
         "PRESSURE RISING";
 
-    readingCard.classList.add(
+    card.classList.add(
         "active"
     );
 
 
-    // Monitor screen
+    // Start selected cell from baseline.
 
-    setMonitorStatus(
+    pressureValues[
+        cellNumber - 1
+    ] = BASE_PRESSURE;
+
+
+    updatePressure(
+        cellNumber,
+        BASE_PRESSURE
+    );
+
+
+    // --------------------------------------
+    // MONITOR
+    // --------------------------------------
+
+    setMonitor(
         "rising",
         "PRESSURE RISING"
     );
 
+
     document
-        .getElementById("mainSensorLabel")
+        .getElementById(
+            "mainSensorLabel"
+        )
         .textContent =
         "SENSOR " + cellNumber;
 
 
-    setWarningMessage(
+    document
+        .getElementById(
+            "warningBox"
+        )
+        .classList.remove(
+            "active"
+        );
+
+
+    setMessage(
         "Monitoring Cell " + cellNumber,
         "Simulated pressure is increasing."
     );
 
 
     // ======================================
-    // PRESSURE RISE
+    // RISE FROM 12 TO 38 mmHg
     // ======================================
 
-    const reachedThreshold =
+    const riseCompleted =
         await animatePressure(
             cellNumber,
-            pressureValues[cellNumber - 1],
-            DEMO_WARNING_THRESHOLD + 3,
+            BASE_PRESSURE,
+            38,
             PRESSURE_RISE_TIME,
-            token
+            mySequence
         );
 
 
     if (
-        !reachedThreshold ||
-        token !== animationToken
+        !riseCompleted ||
+        mySequence !== sequenceNumber
     ) {
-
         return;
     }
 
@@ -207,9 +248,18 @@ async function triggerPressure(cellNumber) {
     // WARNING
     // ======================================
 
-    setMonitorStatus(
+    setMonitor(
         "danger",
-        "⚠ DEMO THRESHOLD EXCEEDED"
+        "⚠ THRESHOLD EXCEEDED"
+    );
+
+
+    state.textContent =
+        "HIGH PRESSURE";
+
+
+    state.classList.add(
+        "warning"
     );
 
 
@@ -217,88 +267,89 @@ async function triggerPressure(cellNumber) {
         .getElementById(
             "bar" + cellNumber
         )
-        .classList.add("high");
-
-
-    selectedState.textContent =
-        "HIGH PRESSURE";
-
-
-    selectedState.classList.add(
-        "warning"
-    );
+        .classList.add(
+            "high"
+        );
 
 
     document
-        .getElementById("warningBox")
-        .classList.add("active");
+        .getElementById(
+            "warningBox"
+        )
+        .classList.add(
+            "active"
+        );
 
 
-    setWarningMessage(
+    setMessage(
+
         "⚠ Demo Threshold Exceeded — Cell "
         + cellNumber,
 
         "Simulated pressure has exceeded "
-        + DEMO_WARNING_THRESHOLD
-        + " mmHg. Automatic pressure "
-        + "redistribution activated."
+        + WARNING_THRESHOLD
+        + " mmHg. Pressure redistribution activated."
+
     );
 
 
-    // Keep warning visible briefly
+    // Let judges see warning
 
-    await wait(WARNING_PAUSE);
+    await wait(
+        WARNING_PAUSE_TIME
+    );
 
 
-    if (token !== animationToken) {
+    if (
+        mySequence !== sequenceNumber
+    ) {
         return;
     }
 
 
     // ======================================
-    // DEFLATION STARTS
+    // DEFLATION
     // ======================================
 
-    selectedState.textContent =
+    state.textContent =
         "DEFLATING";
 
 
-    setWarningMessage(
+    setMessage(
+
         "Redistributing Pressure",
 
         "Cell "
         + cellNumber
         + " is slowly deflating while "
         + "the other cells remain inflated."
+
     );
 
 
-    // This activates the 3.5-second
-    // CSS shrinking animation.
+    // CSS performs physical shrinking.
 
-    selectedCell.classList.add(
+    cell.classList.add(
         "deflated"
     );
 
 
-    // Simulated pressure falls while
-    // the cell deflates.
+    // Reading falls simultaneously.
 
-    const finishedDeflation =
+    const deflationCompleted =
         await animatePressure(
             cellNumber,
-            pressureValues[cellNumber - 1],
+            38,
             8,
-            DEFLATE_TIME,
-            token
+            DEFLATION_TIME,
+            mySequence
         );
 
 
     if (
-        !finishedDeflation ||
-        token !== animationToken
+        !deflationCompleted ||
+        mySequence !== sequenceNumber
     ) {
-
         return;
     }
 
@@ -307,11 +358,11 @@ async function triggerPressure(cellNumber) {
     // PRESSURE RELIEVED
     // ======================================
 
-    selectedState.textContent =
+    state.textContent =
         "DEFLATED";
 
 
-    readingCard.classList.remove(
+    card.classList.remove(
         "active"
     );
 
@@ -320,29 +371,35 @@ async function triggerPressure(cellNumber) {
         .getElementById(
             "bar" + cellNumber
         )
-        .classList.remove("high");
+        .classList.remove(
+            "high"
+        );
 
 
-    setMonitorStatus(
+    setMonitor(
         "normal",
         "PRESSURE RELIEVED"
     );
 
 
-    setWarningMessage(
+    setMessage(
+
         "Pressure Relieved — Cell "
         + cellNumber,
 
-        "The selected cell has deflated. "
-        + "Select another cell to simulate "
-        + "a new high-pressure area."
+        "Cell "
+        + cellNumber
+        + " has deflated. Select another "
+        + "cell to simulate a new "
+        + "high-pressure area."
+
     );
 
 }
 
 
 // ==========================================
-// ANIMATE PRESSURE VALUE
+// ANIMATE PRESSURE
 // ==========================================
 
 function animatePressure(
@@ -350,72 +407,83 @@ function animatePressure(
     startValue,
     endValue,
     duration,
-    token
+    sequence
 ) {
 
-    return new Promise(function(resolve) {
+    return new Promise(
+        function(resolve) {
 
-        const startTime =
-            performance.now();
-
-
-        function animate(currentTime) {
-
-            // Stop old animation if a
-            // new cell was selected.
-
-            if (token !== animationToken) {
-
-                resolve(false);
-
-                return;
-            }
+            const startTime =
+                performance.now();
 
 
-            const progress =
-                Math.min(
-                    (currentTime - startTime)
-                    / duration,
-                    1
+            function animate(
+                currentTime
+            ) {
+
+                if (
+                    sequence !==
+                    sequenceNumber
+                ) {
+
+                    resolve(false);
+
+                    return;
+                }
+
+
+                const progress =
+                    Math.min(
+                        (
+                            currentTime -
+                            startTime
+                        ) / duration,
+                        1
+                    );
+
+
+                const value =
+                    startValue +
+                    (
+                        endValue -
+                        startValue
+                    ) * progress;
+
+
+                pressureValues[
+                    cellNumber - 1
+                ] = value;
+
+
+                updatePressure(
+                    cellNumber,
+                    value
                 );
 
 
-            const value =
-                startValue +
-                (endValue - startValue)
-                * progress;
+                if (
+                    progress < 1
+                ) {
+
+                    requestAnimationFrame(
+                        animate
+                    );
+
+                } else {
+
+                    resolve(true);
+
+                }
+
+            }
 
 
-            pressureValues[
-                cellNumber - 1
-            ] = value;
-
-
-            updatePressureDisplay(
-                cellNumber,
-                value
+            requestAnimationFrame(
+                animate
             );
 
-
-            if (progress < 1) {
-
-                requestAnimationFrame(
-                    animate
-                );
-
-            } else {
-
-                resolve(true);
-            }
-
         }
-
-
-        requestAnimationFrame(
-            animate
-        );
-
-    });
+    );
 
 }
 
@@ -424,7 +492,9 @@ function animatePressure(
 // REINFLATE PREVIOUS CELL
 // ==========================================
 
-function inflateCell(cellNumber) {
+function reinflateCell(
+    cellNumber
+) {
 
     const cell =
         document.getElementById(
@@ -437,17 +507,14 @@ function inflateCell(cellNumber) {
         );
 
 
-    state.textContent =
-        "INFLATING";
-
-
     state.classList.remove(
         "warning"
     );
 
 
-    // Removing "deflated" makes CSS
-    // slowly return the cell to full height.
+    state.textContent =
+        "INFLATING";
+
 
     cell.classList.remove(
         "deflated"
@@ -458,17 +525,21 @@ function inflateCell(cellNumber) {
         .getElementById(
             "readingCard" + cellNumber
         )
-        .classList.remove("active");
+        .classList.remove(
+            "active"
+        );
 
 
     document
         .getElementById(
             "bar" + cellNumber
         )
-        .classList.remove("high");
+        .classList.remove(
+            "high"
+        );
 
 
-    const startingPressure =
+    const startingValue =
         pressureValues[
             cellNumber - 1
         ];
@@ -478,20 +549,26 @@ function inflateCell(cellNumber) {
         performance.now();
 
 
-    function animateInflation(currentTime) {
+    function animateInflation(
+        currentTime
+    ) {
 
         const progress =
             Math.min(
-                (currentTime - startTime)
-                / INFLATE_TIME,
+                (
+                    currentTime -
+                    startTime
+                ) / INFLATION_TIME,
                 1
             );
 
 
         const value =
-            startingPressure +
-            (BASE_PRESSURE - startingPressure)
-            * progress;
+            startingValue +
+            (
+                BASE_PRESSURE -
+                startingValue
+            ) * progress;
 
 
         pressureValues[
@@ -499,13 +576,15 @@ function inflateCell(cellNumber) {
         ] = value;
 
 
-        updatePressureDisplay(
+        updatePressure(
             cellNumber,
             value
         );
 
 
-        if (progress < 1) {
+        if (
+            progress < 1
+        ) {
 
             requestAnimationFrame(
                 animateInflation
@@ -518,7 +597,7 @@ function inflateCell(cellNumber) {
             ] = BASE_PRESSURE;
 
 
-            updatePressureDisplay(
+            updatePressure(
                 cellNumber,
                 BASE_PRESSURE
             );
@@ -526,6 +605,7 @@ function inflateCell(cellNumber) {
 
             state.textContent =
                 "INFLATED";
+
         }
 
     }
@@ -539,10 +619,12 @@ function inflateCell(cellNumber) {
 
 
 // ==========================================
-// RESET NORMAL CELL
+// RESET CELL
 // ==========================================
 
-function setNormalCell(cellNumber) {
+function resetCell(
+    cellNumber
+) {
 
     const cell =
         document.getElementById(
@@ -574,7 +656,7 @@ function setNormalCell(cellNumber) {
     ] = BASE_PRESSURE;
 
 
-    updatePressureDisplay(
+    updatePressure(
         cellNumber,
         BASE_PRESSURE
     );
@@ -584,23 +666,27 @@ function setNormalCell(cellNumber) {
         .getElementById(
             "readingCard" + cellNumber
         )
-        .classList.remove("active");
+        .classList.remove(
+            "active"
+        );
 
 
     document
         .getElementById(
             "bar" + cellNumber
         )
-        .classList.remove("high");
+        .classList.remove(
+            "high"
+        );
 
 }
 
 
 // ==========================================
-// UPDATE PRESSURE SCREEN
+// UPDATE PRESSURE DISPLAY
 // ==========================================
 
-function updatePressureDisplay(
+function updatePressure(
     cellNumber,
     value
 ) {
@@ -609,7 +695,7 @@ function updatePressureDisplay(
         Math.round(value);
 
 
-    // Individual sensor reading
+    // Sensor number
 
     document
         .getElementById(
@@ -619,10 +705,10 @@ function updatePressureDisplay(
         rounded + " mmHg";
 
 
-    // Bar scale:
-    // 50 mmHg = full visual bar
+    // Pressure bar
+    // 50 mmHg fills entire visual bar.
 
-    const barPercentage =
+    const percentage =
         Math.min(
             (rounded / 50) * 100,
             100
@@ -634,12 +720,14 @@ function updatePressureDisplay(
             "bar" + cellNumber
         )
         .style.width =
-        barPercentage + "%";
+        percentage + "%";
 
 
-    // Large central reading
+    // Large monitor number
 
-    if (cellNumber === activeCell) {
+    if (
+        cellNumber === activeCell
+    ) {
 
         document
             .getElementById(
@@ -647,6 +735,7 @@ function updatePressureDisplay(
             )
             .textContent =
             rounded + " mmHg";
+
     }
 
 }
@@ -656,33 +745,33 @@ function updatePressureDisplay(
 // MONITOR STATUS
 // ==========================================
 
-function setMonitorStatus(
-    statusClass,
+function setMonitor(
+    status,
     text
 ) {
 
-    const monitorStatus =
+    const monitor =
         document.getElementById(
             "monitorStatus"
         );
 
 
-    monitorStatus.className =
+    monitor.className =
         "monitor-status "
-        + statusClass;
+        + status;
 
 
-    monitorStatus.textContent =
+    monitor.textContent =
         text;
 
 }
 
 
 // ==========================================
-// WARNING BOX
+// MESSAGE BOX
 // ==========================================
 
-function setWarningMessage(
+function setMessage(
     title,
     message
 ) {
@@ -709,7 +798,9 @@ function setWarningMessage(
 // TIMER
 // ==========================================
 
-function wait(milliseconds) {
+function wait(
+    milliseconds
+) {
 
     return new Promise(
         function(resolve) {
