@@ -1,526 +1,628 @@
-/* ==========================================
-   PRESSUREGUARD COLOUR THEME
-   Based on the exhibition poster
-========================================== */
+<!DOCTYPE html>
+<html lang="en">
 
-:root {
-    --navy: #344A68;
-    --blue: #718BB8;
-    --light-blue: #C9DAE4;
-    --pale-blue: #E5EFF2;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    --cream: #F4EFE3;
-    --off-white: #FAF8F2;
+    <title>PressureGuard Simulator</title>
 
-    --text: #29394D;
-    --muted: #667085;
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    --warning: #B95D58;
-    --warning-light: #F1D6D2;
+<body>
 
-    --border: #D5DEE5;
-}
+<main class="page">
 
+    <!-- =====================================
+         HEADER
+    ====================================== -->
 
-/* ==========================================
-   BASIC PAGE
-========================================== */
+    <header class="header">
 
-* {
-    box-sizing: border-box;
-}
+        <p class="project-name">
+            PRESSUREGUARD
+        </p>
 
-body {
-    margin: 0;
+        <h1>
+            Smart Pressure Redistribution Simulator
+        </h1>
 
-    font-family: Arial, Helvetica, sans-serif;
+        <p class="subtitle">
+            Interactive demonstration of pressure detection
+            and automatic air-cell response
+        </p>
 
-    background: var(--cream);
+    </header>
 
-    color: var(--text);
-}
 
-.page {
-    width: min(1100px, 92%);
-    margin: 0 auto;
+    <!-- =====================================
+         SYSTEM STATUS
+    ====================================== -->
 
-    padding: 40px 0;
-}
+    <section class="system-status">
 
+        <div>
+            <span class="online-dot"></span>
+            <strong>SYSTEM ACTIVE</strong>
+        </div>
 
-/* ==========================================
-   HEADER
-========================================== */
+        <div>
+            ESP32 Controller:
+            <strong>ONLINE</strong>
+        </div>
 
-.header {
-    text-align: center;
+    </section>
 
-    padding: 25px 20px 35px;
-}
 
-.project-name {
-    margin-bottom: 8px;
+    <!-- =====================================
+         WARNING MESSAGE
+    ====================================== -->
 
-    color: var(--blue);
+    <section
+        id="warningBox"
+        class="warning-box"
+        aria-live="polite"
+    >
 
-    font-size: 14px;
-    font-weight: bold;
+        <strong id="warningTitle">
+            System Ready
+        </strong>
 
-    letter-spacing: 4px;
-}
+        <span id="warningMessage">
+            All four pressure cells are inflated.
+        </span>
 
-.header h1 {
-    margin: 0 0 12px;
+    </section>
 
-    color: var(--navy);
 
-    font-size: clamp(32px, 5vw, 55px);
-}
+    <!-- =====================================
+         LIVE PRESSURE MONITOR
+    ====================================== -->
 
-.subtitle {
-    max-width: 650px;
+    <section class="pressure-monitor">
 
-    margin: auto;
+        <div class="monitor-header">
 
-    color: var(--muted);
+            <div>
 
-    font-size: 17px;
-    line-height: 1.6;
-}
+                <p class="section-label">
+                    LIVE SENSOR MONITOR
+                </p>
 
+                <h2>
+                    Pressure Detection Screen
+                </h2>
 
-/* ==========================================
-   SYSTEM STATUS
-========================================== */
+            </div>
 
-.system-status {
-    display: flex;
 
-    justify-content: space-between;
-    align-items: center;
+            <div
+                id="monitorStatus"
+                class="monitor-status normal"
+            >
+                NORMAL
+            </div>
 
-    gap: 20px;
+        </div>
 
-    padding: 15px 22px;
 
-    margin-bottom: 20px;
+        <!-- SENSOR READINGS -->
 
-    background: var(--navy);
+        <div class="pressure-readings">
 
-    color: white;
 
-    border-radius: 14px;
-}
+            <!-- SENSOR 1 -->
 
-.online-dot {
-    display: inline-block;
+            <div
+                class="pressure-reading"
+                id="readingCard1"
+            >
 
-    width: 10px;
-    height: 10px;
+                <span>
+                    Sensor 1
+                </span>
 
-    margin-right: 8px;
+                <strong id="pressure1">
+                    12 mmHg
+                </strong>
 
-    border-radius: 50%;
+                <div class="pressure-bar">
 
-    background: #A8D5BA;
-}
+                    <div
+                        id="bar1"
+                        class="pressure-fill"
+                    ></div>
 
+                </div>
 
-/* ==========================================
-   WARNING BOX
-========================================== */
+            </div>
 
-.warning-box {
-    display: flex;
 
-    flex-direction: column;
+            <!-- SENSOR 2 -->
 
-    gap: 5px;
+            <div
+                class="pressure-reading"
+                id="readingCard2"
+            >
 
-    margin-bottom: 20px;
+                <span>
+                    Sensor 2
+                </span>
 
-    padding: 18px 22px;
+                <strong id="pressure2">
+                    12 mmHg
+                </strong>
 
-    background: var(--pale-blue);
+                <div class="pressure-bar">
 
-    border: 2px solid var(--light-blue);
+                    <div
+                        id="bar2"
+                        class="pressure-fill"
+                    ></div>
 
-    border-radius: 14px;
+                </div>
 
-    color: var(--navy);
+            </div>
 
-    transition: 0.3s ease;
-}
 
-.warning-box.active {
-    background: var(--warning-light);
+            <!-- SENSOR 3 -->
 
-    border-color: var(--warning);
+            <div
+                class="pressure-reading"
+                id="readingCard3"
+            >
 
-    color: var(--warning);
-}
+                <span>
+                    Sensor 3
+                </span>
 
+                <strong id="pressure3">
+                    12 mmHg
+                </strong>
 
-/* ==========================================
-   MAIN SIMULATOR
-========================================== */
+                <div class="pressure-bar">
 
-.simulator {
-    padding: 30px;
+                    <div
+                        id="bar3"
+                        class="pressure-fill"
+                    ></div>
 
-    background: var(--off-white);
+                </div>
 
-    border: 2px solid var(--light-blue);
+            </div>
 
-    border-radius: 22px;
-}
 
-.simulator-heading {
-    display: flex;
+            <!-- SENSOR 4 -->
 
-    justify-content: space-between;
-    align-items: flex-end;
+            <div
+                class="pressure-reading"
+                id="readingCard4"
+            >
 
-    gap: 20px;
+                <span>
+                    Sensor 4
+                </span>
 
-    margin-bottom: 35px;
-}
+                <strong id="pressure4">
+                    12 mmHg
+                </strong>
 
-.section-label {
-    margin: 0 0 5px;
+                <div class="pressure-bar">
 
-    color: var(--blue);
+                    <div
+                        id="bar4"
+                        class="pressure-fill"
+                    ></div>
 
-    font-size: 12px;
-    font-weight: bold;
+                </div>
 
-    letter-spacing: 2px;
-}
+            </div>
 
-h2 {
-    margin: 5px 0;
+        </div>
 
-    color: var(--navy);
-}
 
+        <!-- LARGE ACTIVE READING -->
 
-/* ==========================================
-   LEGEND
-========================================== */
+        <div class="main-reading">
 
-.legend {
-    display: flex;
+            <span id="mainSensorLabel">
+                SYSTEM MONITORING
+            </span>
 
-    gap: 18px;
+            <strong id="mainPressure">
+                12 mmHg
+            </strong>
 
-    font-size: 13px;
-}
+            <span id="mainPressureText">
+                Simulated Pressure
+            </span>
 
-.legend span {
-    display: flex;
+            <small class="simulation-notice">
+                SIMULATED DATA — NOT A CLINICAL MEASUREMENT
+            </small>
 
-    align-items: center;
+        </div>
 
-    gap: 7px;
-}
 
-.legend i {
-    display: inline-block;
+        <div class="threshold-display">
 
-    width: 12px;
-    height: 12px;
+            <span>
+                DEMONSTRATION WARNING THRESHOLD
+            </span>
 
-    border-radius: 50%;
-}
+            <strong>
+                35 mmHg
+            </strong>
 
-.normal-dot {
-    background: var(--blue);
-}
+        </div>
 
-.high-dot {
-    background: var(--warning);
-}
+    </section>
 
 
-/* ==========================================
-   PRESSURE CELLS
-========================================== */
+    <!-- =====================================
+         MAIN CELL SIMULATOR
+    ====================================== -->
 
-.cells {
-    display: grid;
+    <section class="simulator">
 
-    grid-template-columns: repeat(4, 1fr);
+        <div class="simulator-heading">
 
-    gap: 18px;
+            <div>
 
-    align-items: end;
+                <p class="section-label">
+                    LIVE SIMULATION
+                </p>
 
-    min-height: 300px;
-}
+                <h2>
+                    Pressure Cell Monitor
+                </h2>
 
-.cell-container {
-    text-align: center;
-}
+            </div>
 
-.sensor-name {
-    margin-bottom: 10px;
 
-    color: var(--muted);
+            <div class="legend">
 
-    font-size: 12px;
-    font-weight: bold;
+                <span>
+                    <i class="normal-dot"></i>
+                    Normal
+                </span>
 
-    letter-spacing: 1px;
-}
+                <span>
+                    <i class="high-dot"></i>
+                    Demo Threshold Exceeded
+                </span>
 
+            </div>
 
-/* Normal inflated cell */
+        </div>
 
-.air-cell {
-    height: 200px;
 
-    display: flex;
+        <!-- FOUR CELLS -->
 
-    justify-content: center;
-    align-items: center;
+        <div class="cells">
 
-    background: var(--light-blue);
 
-    border: 4px solid var(--blue);
+            <!-- CELL 1 -->
 
-    border-radius: 35px;
+            <article class="cell-container">
 
-    color: var(--navy);
+                <p class="sensor-name">
+                    SENSOR 1
+                </p>
 
-    font-size: 18px;
-    font-weight: bold;
+                <div
+                    class="air-cell"
+                    id="cell1"
+                >
+                    CELL 1
+                </div>
 
-    box-shadow:
-        inset 0 -12px 20px
-        rgba(52, 74, 104, 0.08);
+                <p
+                    class="cell-state"
+                    id="state1"
+                >
+                    INFLATED
+                </p>
 
-    transition:
-        height 0.55s ease,
-        background 0.4s ease,
-        border-color 0.4s ease,
-        color 0.4s ease;
-}
+            </article>
 
 
-/* High pressure / deflating cell */
+            <!-- CELL 2 -->
 
-.air-cell.deflated {
-    height: 80px;
+            <article class="cell-container">
 
-    background: var(--warning-light);
+                <p class="sensor-name">
+                    SENSOR 2
+                </p>
 
-    border-color: var(--warning);
+                <div
+                    class="air-cell"
+                    id="cell2"
+                >
+                    CELL 2
+                </div>
 
-    color: var(--warning);
-}
+                <p
+                    class="cell-state"
+                    id="state2"
+                >
+                    INFLATED
+                </p>
 
+            </article>
 
-/* Cell state text */
 
-.cell-state {
-    margin-top: 12px;
+            <!-- CELL 3 -->
 
-    color: var(--blue);
+            <article class="cell-container">
 
-    font-size: 13px;
-    font-weight: bold;
+                <p class="sensor-name">
+                    SENSOR 3
+                </p>
 
-    letter-spacing: 1px;
-}
+                <div
+                    class="air-cell"
+                    id="cell3"
+                >
+                    CELL 3
+                </div>
 
-.cell-state.warning {
-    color: var(--warning);
-}
+                <p
+                    class="cell-state"
+                    id="state3"
+                >
+                    INFLATED
+                </p>
 
+            </article>
 
-/* ==========================================
-   CONTROLS
-========================================== */
 
-.controls {
-    margin-top: 25px;
+            <!-- CELL 4 -->
 
-    padding: 28px;
+            <article class="cell-container">
 
-    text-align: center;
+                <p class="sensor-name">
+                    SENSOR 4
+                </p>
 
-    background: var(--pale-blue);
+                <div
+                    class="air-cell"
+                    id="cell4"
+                >
+                    CELL 4
+                </div>
 
-    border-radius: 20px;
-}
+                <p
+                    class="cell-state"
+                    id="state4"
+                >
+                    INFLATED
+                </p>
 
-.controls > p:not(.section-label) {
-    color: var(--muted);
-}
+            </article>
 
-.control-buttons {
-    display: flex;
+        </div>
 
-    justify-content: center;
+    </section>
 
-    flex-wrap: wrap;
 
-    gap: 12px;
+    <!-- =====================================
+         CONTROLS
+    ====================================== -->
 
-    margin-top: 20px;
-}
+    <section class="controls">
 
-.control-buttons button {
-    width: 58px;
-    height: 58px;
+        <p class="section-label">
+            PRESSURE SENSOR SIMULATION
+        </p>
 
-    border: none;
+        <h2>
+            Select a high-pressure area
+        </h2>
 
-    border-radius: 14px;
+        <p>
+            Press keyboard key
+            <strong>1, 2, 3 or 4</strong>
+            or tap a button below.
+        </p>
 
-    background: var(--navy);
 
-    color: white;
+        <div class="control-buttons">
 
-    font-size: 21px;
-    font-weight: bold;
+            <button
+                type="button"
+                data-cell="1"
+            >
+                1
+            </button>
 
-    cursor: pointer;
+            <button
+                type="button"
+                data-cell="2"
+            >
+                2
+            </button>
 
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease;
-}
+            <button
+                type="button"
+                data-cell="3"
+            >
+                3
+            </button>
 
-.control-buttons button:hover {
-    background: var(--blue);
+            <button
+                type="button"
+                data-cell="4"
+            >
+                4
+            </button>
 
-    transform: translateY(-2px);
-}
+        </div>
 
+    </section>
 
-/* ==========================================
-   HOW IT WORKS
-========================================== */
 
-.how-it-works {
-    display: flex;
+    <!-- =====================================
+         HOW IT WORKS
+    ====================================== -->
 
-    justify-content: space-between;
-    align-items: center;
+    <section class="how-it-works">
 
-    gap: 15px;
 
-    margin-top: 25px;
+        <!-- STEP 1 -->
 
-    padding: 25px;
+        <div class="process-step">
 
-    background: var(--off-white);
+            <span class="step-number">
+                01
+            </span>
 
-    border: 1px solid var(--border);
+            <div>
 
-    border-radius: 18px;
-}
+                <strong>
+                    Pressure Increases
+                </strong>
 
-.process-step {
-    display: flex;
+                <p>
+                    The simulator generates an increasing
+                    pressure reading at the selected cell.
+                </p>
 
-    gap: 12px;
+            </div>
 
-    flex: 1;
-}
+        </div>
 
-.step-number {
-    color: var(--blue);
 
-    font-size: 24px;
-    font-weight: bold;
-}
+        <div class="process-arrow">
+            →
+        </div>
 
-.process-step strong {
-    color: var(--navy);
-}
 
-.process-step p {
-    margin-bottom: 0;
+        <!-- STEP 2 -->
 
-    color: var(--muted);
+        <div class="process-step">
 
-    font-size: 13px;
+            <span class="step-number">
+                02
+            </span>
 
-    line-height: 1.5;
-}
+            <div>
 
-.process-arrow {
-    color: var(--blue);
+                <strong>
+                    Threshold Exceeded
+                </strong>
 
-    font-size: 24px;
-}
+                <p>
+                    When the simulated reading exceeds
+                    the demonstration threshold, the
+                    system activates a warning.
+                </p>
 
+            </div>
 
-/* ==========================================
-   FOOTER
-========================================== */
+        </div>
 
-footer {
-    margin-top: 35px;
 
-    padding: 20px;
+        <div class="process-arrow">
+            →
+        </div>
 
-    text-align: center;
 
-    color: var(--blue);
+        <!-- STEP 3 -->
 
-    font-size: 13px;
-}
+        <div class="process-step">
 
+            <span class="step-number">
+                03
+            </span>
 
-/* ==========================================
-   MOBILE / IPAD RESPONSIVE DESIGN
-========================================== */
+            <div>
 
-@media (max-width: 700px) {
+                <strong>
+                    Cell Deflates
+                </strong>
 
-    .page {
-        width: 94%;
-    }
+                <p>
+                    The selected cell slowly deflates
+                    to demonstrate pressure relief.
+                </p>
 
-    .system-status {
-        flex-direction: column;
+            </div>
 
-        align-items: flex-start;
-    }
+        </div>
 
-    .simulator-heading {
-        flex-direction: column;
 
-        align-items: flex-start;
-    }
+        <div class="process-arrow">
+            →
+        </div>
 
-    .cells {
-        grid-template-columns:
-            repeat(2, 1fr);
 
-        min-height: auto;
-    }
+        <!-- STEP 4 -->
 
-    .air-cell {
-        height: 150px;
-    }
+        <div class="process-step">
 
-    .air-cell.deflated {
-        height: 65px;
-    }
+            <span class="step-number">
+                04
+            </span>
 
-    .how-it-works {
-        flex-direction: column;
+            <div>
 
-        align-items: stretch;
-    }
+                <strong>
+                    Pressure Redistributed
+                </strong>
 
-    .process-arrow {
-        text-align: center;
+                <p>
+                    When another cell is selected,
+                    the previous cell reinflates while
+                    the newly selected cell responds.
+                </p>
 
-        transform: rotate(90deg);
-    }
-}
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================
+         DISCLAIMER
+    ====================================== -->
+
+    <section class="prototype-notice">
+
+        <strong>
+            Prototype Simulation
+        </strong>
+
+        <p>
+            Pressure values displayed on this website are
+            simulated demonstration data and are not measurements
+            obtained from the physical prototype or a clinical device.
+            The warning threshold is used only to demonstrate
+            the PressureGuard control concept.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer>
+
+        PressureGuard
+        •
+        Smart Pressure Redistribution Prototype
+
+    </footer>
+
+</main>
+
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
